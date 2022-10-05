@@ -39,6 +39,8 @@ public:
     int truncateTable(QString tabulka);
     int truncateAll();
 
+    int indexX=0;
+
 signals:
     void odesliChybovouHlasku(QString chybovaHlaska);
 private:
@@ -63,13 +65,15 @@ private:
     int vlozPlatnost(QXmlStreamAttributes atributy, QDate &plOd, QDate &plDo);
     int vlozPo(QXmlStreamAttributes atributy);
     int vlozR(QXmlStreamAttributes atributy);
-    QString vlozS(QXmlStreamAttributes atributy);
+    int vlozS(QXmlStreamAttributes atributy);
     int vlozSpPo(QXmlStreamAttributes atributy, QVector<int> navazneSpoje);
     int vlozT(QXmlStreamAttributes atributy);
     int vlozTv(QXmlStreamAttributes atributy);
     int vlozTy(QXmlStreamAttributes atributy);
-    int vlozX(QXmlStreamAttributes atributy, int &counter, QString cisloSpoje);
+    int vlozX(QXmlStreamAttributes atributy, int &counter, int cisloSpoje);
+
     int vlozZ(QXmlStreamAttributes atributy);
+    int seznamPoznamek(QXmlStreamAttributes atributy, int cisloSpoje, int poradi);
 
     QVector<int> seznamDlouhychSpojuNew(QXmlStreamAttributes atributy);
 
