@@ -55,6 +55,9 @@ void XmlRopidImportStream::slotOtevriSoubor(QString cesta)
 void XmlRopidImportStream::otevriSoubor(QString cesta)
 {
     qDebug() <<  Q_FUNC_INFO;
+    QTime zacatek=QTime::currentTime();
+    emit odesliChybovouHlasku("Zacatek importu:"+zacatek.toString() );
+
 
     QFile file(cesta);
 
@@ -65,20 +68,22 @@ void XmlRopidImportStream::otevriSoubor(QString cesta)
         return;
     }
 
-    natahniNew(file);
+    natahni(file);
 
     ropidSQL.zavriDB();
+    QTime konec=QTime::currentTime();
+
+     emit odesliChybovouHlasku("Konec importu:"+konec.toString()+" \n import trval vterin: "+QString::number(zacatek.secsTo(konec)) );
 }
 
 
-void XmlRopidImportStream::natahniNew(QFile &file)
+void XmlRopidImportStream::natahni(QFile &file)
 {
     qDebug() <<  Q_FUNC_INFO;
 
     QXmlStreamReader reader(&file);
     QTextStream errorStream(stderr);
     QVector<int> navazneSpojeObehu;
-    // emit odesliChybovouHlasku("Zacatek importu:"+QTime::currentTime().toString() );
 
     this->databazeStart();
     QString staryTag="";
@@ -91,13 +96,13 @@ void XmlRopidImportStream::natahniNew(QFile &file)
         QXmlStreamAttributes atributyObehu;
         int xCounter=0;
 
+        QVector<QString> obsah;
+
 
         while (!reader.atEnd()) {
 
-
             auto currentToken = reader.tokenString();
             QXmlStreamAttributes atributy=reader.attributes();
-
 
             if(currentToken=="StartElement")
             {
@@ -106,19 +111,14 @@ void XmlRopidImportStream::natahniNew(QFile &file)
                     staryTag=reader.name().toString();
                 }
 
-                QVector<QString> obsah={"", "ds","x","v","s","bod","traj"};
-
                 if((staryTag!=reader.name().toString())&&(!obsah.contains(reader.name().toString())))
                 {
                     QString hlaska="Zpracovavam tag: "+reader.name().toString();
                     qDebug()<<hlaska;
                     staryTag=reader.name().toString();
-
+                    obsah.push_back(staryTag);
                     emit odesliChybovouHlasku(hlaska);
-                    qApp->processEvents();
-
-                  //  QEventLoop::processEvents(QEventLoop::AllEvents);
-                }
+               }
 
                 if(reader.name()=="d")
                 {
@@ -181,8 +181,7 @@ void XmlRopidImportStream::natahniNew(QFile &file)
 
                 else if(reader.name()=="ds")
                 {
-                    //vlozDsNew(atributyObehu,atributy);
-                    navazneSpojeObehu.append(seznamDlouhychSpojuNew(atributy));
+                    navazneSpojeObehu.append(seznamDlouhychSpoju(atributy));
                 }
 
                 else if(reader.name()=="s")
@@ -230,7 +229,6 @@ void XmlRopidImportStream::natahniNew(QFile &file)
             }
 
             emit signalNastavProgress(reader.lineNumber());
-              qApp->processEvents();
             reader.readNext();
         }
 
@@ -500,7 +498,7 @@ int XmlRopidImportStream::vlozPlatnost(QXmlStreamAttributes atributy, QDate &plO
     qDebug().noquote()<<queryString;
 
 
-    QString vystup="platnost dat od "+plOd.toString(Qt::ISODate)+" do "+plDo.toString(Qt::ISODate);
+    QString vystup="platnost dat od "+plOd.toString(Qt::ISODate)+" do "+plDo.toString(Qt::ISODate)+" \n pocet dni:"+QString::number(plOd.daysTo(plDo)+1);
     //   QSqlQuery query(queryString,ropidSQL.mojeDatabaze);
     qDebug()<<vystup;
     emit odesliChybovouHlasku(vystup );
@@ -606,9 +604,7 @@ int XmlRopidImportStream::vlozSpPo(QXmlStreamAttributes atributyO,QVector<int> n
         polozky.push_back(inicializujPolozku("s",seznam.at(i),"Integer"));
         polozky.push_back(inicializujPolozku("pokrac",QString::number(navazujiciSpoje.contains(seznam.at(i).toInt())),"Boolean"));
         polozky.push_back(inicializujPolozku("ord",QString::number(i),"Integer"));
-        //vlozSpPo(element);
         QString queryString=this->slozInsert("sp_po",polozky);
-       // qDebug()<<"sp_po "<<queryString;
         QSqlQuery query;
         query.exec(queryString);
     }
@@ -617,7 +613,7 @@ int XmlRopidImportStream::vlozSpPo(QXmlStreamAttributes atributyO,QVector<int> n
 }
 
 
-QVector<int> XmlRopidImportStream::seznamDlouhychSpojuNew(QXmlStreamAttributes atributy)
+QVector<int> XmlRopidImportStream::seznamDlouhychSpoju(QXmlStreamAttributes atributy)
 {
     //   qDebug() <<  Q_FUNC_INFO;
     QVector<int> navazujiciSpoje;
@@ -762,8 +758,6 @@ int XmlRopidImportStream::vlozZ(QXmlStreamAttributes atributy)
     QString nazevElementu="z";
 
     QVector<Navrat> polozky;
-    //  polozky.push_back(inicializujPolozku("c",atributy.value("c").toString(),"Integer"));
-
     polozky.push_back(inicializujPolozku("u",atributy.value("u").toString(),"Integer"));
     polozky.push_back(inicializujPolozku("z",atributy.value("z").toString(),"Integer"));
     polozky.push_back(inicializujPolozku("kj",atributy.value("kj").toString(),"String"));
@@ -877,8 +871,6 @@ int XmlRopidImportStream::vlozX(QXmlStreamAttributes atributy, int &counter, int
     QString nazevElementu="x";
 
     QVector<Navrat> polozky;
-    //   polozky.push_back(inicializujPolozku("c",atributy.value("c").toString(),"Integer"));
-
     polozky.push_back(inicializujPolozku("s_id",QString::number(cisloSpoje),"Integer"));
     polozky.push_back(inicializujPolozku("u",atributy.value("u").toString(),"Integer"));
     polozky.push_back(inicializujPolozku("z",atributy.value("z").toString(),"Integer"));
@@ -904,18 +896,13 @@ int XmlRopidImportStream::vlozX(QXmlStreamAttributes atributy, int &counter, int
     polozky.push_back(inicializujPolozku("s1",atributy.value("s1").toString(),"Boolean"));
     polozky.push_back(inicializujPolozku("s2",atributy.value("s2").toString(),"Boolean"));
 
-
     QString queryString=this->slozInsert(nazevElementu,polozky);
     QSqlQuery query;
     query.exec(queryString);
-
     seznamPoznamek(atributy,cisloSpoje,counter );
-
-
     counter++;
 
     return 1;
-
 }
 
 
@@ -983,7 +970,6 @@ int XmlRopidImportStream::spocitejRadkySouboru(QString fileName)
         QTextStream in_c(&inputFile);
         while (!in_c.atEnd())
         {
-            //QString line = in_c.readLine();
             in_c.readLine();
             counter++;
         }

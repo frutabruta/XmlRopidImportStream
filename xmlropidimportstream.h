@@ -7,9 +7,16 @@
 #include <QtXml>
 #include "sqlpraceropid.h"
 
-class XmlRopidImportStream: public QObject
+class XmlRopidImportStream: public QThread
 {
     Q_OBJECT
+
+    void run() override {
+            QString result;
+            /* ... here is the expensive or blocking operation ... */
+            slotOtevriSoubor(vstupniXmlSouborCesta);
+            emit resultReady(result);
+        }
 public:
 
     struct Navrat
@@ -48,6 +55,7 @@ signals:
     void odesliChybovouHlasku(QString chybovaHlaska);
     void signalNastavProgress(int vstup);
     void signalNastavProgressMax(int vstup);
+    void resultReady(const QString &s);
 private:
 
     void natahniNew(QFile &file);
