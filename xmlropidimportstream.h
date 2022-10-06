@@ -41,10 +41,13 @@ public:
 
     int indexX=0;
 
+    int spocitejRadkySouboru(QString fileName);
 public slots:
     void slotOtevriSoubor(QString cesta);
 signals:
     void odesliChybovouHlasku(QString chybovaHlaska);
+    void signalNastavProgress(int vstup);
+    void signalNastavProgressMax(int vstup);
 private:
 
     void natahniNew(QFile &file);

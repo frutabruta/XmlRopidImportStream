@@ -47,6 +47,7 @@ XmlRopidImportStream::Navrat XmlRopidImportStream::inicializujPolozku(QString na
 
 void XmlRopidImportStream::slotOtevriSoubor(QString cesta)
 {
+    emit signalNastavProgressMax(spocitejRadkySouboru(cesta));
     otevriSoubor(cesta);
 }
 
@@ -88,9 +89,11 @@ void XmlRopidImportStream::natahniNew(QFile &file)
 
         int aktualniCisloSpoje=0;
         QXmlStreamAttributes atributyObehu;
-        int counter=0;
+        int xCounter=0;
+
 
         while (!reader.atEnd()) {
+
 
             auto currentToken = reader.tokenString();
             QXmlStreamAttributes atributy=reader.attributes();
@@ -190,7 +193,7 @@ void XmlRopidImportStream::natahniNew(QFile &file)
 
                 else if(reader.name()=="x")
                 {
-                    vlozX(atributy,counter,aktualniCisloSpoje);
+                    vlozX(atributy,xCounter,aktualniCisloSpoje);
                 }
 
 
@@ -211,13 +214,14 @@ void XmlRopidImportStream::natahniNew(QFile &file)
                     }
 
                  */
+
             }
             else if(currentToken=="EndElement")
             {
                 if(reader.name()=="s")
                 {
                     aktualniCisloSpoje=0;
-                    counter=0;
+                    xCounter=0;
                 }
                 if(reader.name()=="o")
                 {
@@ -225,6 +229,8 @@ void XmlRopidImportStream::natahniNew(QFile &file)
                 }
             }
 
+            emit signalNastavProgress(reader.lineNumber());
+              qApp->processEvents();
             reader.readNext();
         }
 
@@ -905,7 +911,7 @@ int XmlRopidImportStream::vlozX(QXmlStreamAttributes atributy, int &counter, int
 
     seznamPoznamek(atributy,cisloSpoje,counter );
 
-     qApp->processEvents();
+
     counter++;
 
     return 1;
@@ -958,4 +964,33 @@ QString XmlRopidImportStream::vytvorCas(QString vstup)
     vstup="";
     vstup=QString::number(hodiny)+""+QString::number(minuty)+""+QString::number(sekundy);
     return vstup;
+}
+
+
+
+int XmlRopidImportStream::spocitejRadkySouboru(QString fileName)
+{
+    qDebug()<<Q_FUNC_INFO;
+
+    // zdroj: https://stackoverflow.com/questions/5444959/read-a-text-file-line-by-line-in-qt
+    QFile inputFile(fileName);
+
+    int counter=0;
+
+    if (inputFile.open(QIODevice::ReadOnly))
+    {
+
+        QTextStream in_c(&inputFile);
+        while (!in_c.atEnd())
+        {
+            //QString line = in_c.readLine();
+            in_c.readLine();
+            counter++;
+        }
+        inputFile.close();
+    }
+
+    qDebug()<<"soubor ma "<<counter<<" radku";
+    qDebug()<<"konec soubornaRadky";
+    return counter;
 }
