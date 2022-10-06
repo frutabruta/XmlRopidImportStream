@@ -5,6 +5,7 @@
 #include <QDebug>
 #include <QMainWindow>
 #include <QCoreApplication>
+#include <QApplication>
 
 
 XmlRopidImportStream::XmlRopidImportStream()
@@ -40,6 +41,13 @@ XmlRopidImportStream::Navrat XmlRopidImportStream::inicializujPolozku(QString na
     }
 
     return navrat;
+}
+
+
+
+void XmlRopidImportStream::slotOtevriSoubor(QString cesta)
+{
+    otevriSoubor(cesta);
 }
 
 
@@ -102,7 +110,10 @@ void XmlRopidImportStream::natahniNew(QFile &file)
                     QString hlaska="Zpracovavam tag: "+reader.name().toString();
                     qDebug()<<hlaska;
                     staryTag=reader.name().toString();
+
                     emit odesliChybovouHlasku(hlaska);
+                    qApp->processEvents();
+
                   //  QEventLoop::processEvents(QEventLoop::AllEvents);
                 }
 
@@ -894,6 +905,7 @@ int XmlRopidImportStream::vlozX(QXmlStreamAttributes atributy, int &counter, int
 
     seznamPoznamek(atributy,cisloSpoje,counter );
 
+     qApp->processEvents();
     counter++;
 
     return 1;

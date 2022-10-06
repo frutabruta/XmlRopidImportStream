@@ -41,6 +41,8 @@ public:
 
     int indexX=0;
 
+public slots:
+    void slotOtevriSoubor(QString cesta);
 signals:
     void odesliChybovouHlasku(QString chybovaHlaska);
 private:
