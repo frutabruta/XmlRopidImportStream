@@ -73,7 +73,7 @@ void XmlRopidImportStream::otevriSoubor(QString cesta)
     ropidSQL.zavriDB();
     QTime konec=QTime::currentTime();
 
-     emit odesliChybovouHlasku("Konec importu:"+konec.toString()+" \n import trval vterin: "+QString::number(zacatek.secsTo(konec)) );
+    emit odesliChybovouHlasku("Konec importu:"+konec.toString()+" \n import trval vterin: "+QString::number(zacatek.secsTo(konec)) );
 }
 
 
@@ -118,7 +118,7 @@ void XmlRopidImportStream::natahni(QFile &file)
                     staryTag=reader.name().toString();
                     obsah.push_back(staryTag);
                     emit odesliChybovouHlasku(hlaska);
-               }
+                }
 
                 if(reader.name()=="d")
                 {
@@ -333,7 +333,7 @@ int XmlRopidImportStream::vlozD(QXmlStreamAttributes atributy)
     polozky.push_back(inicializujPolozku("em",atributy.value("em").toString(),"String"));
     QString queryString=this->slozInsert("d",polozky);
 
-  //  QSqlQuery query(queryString,ropidSQL.mojeDatabaze);
+    //  QSqlQuery query(queryString,ropidSQL.mojeDatabaze);
 
     QSqlQuery query;
     query.exec(queryString);
@@ -537,8 +537,12 @@ int XmlRopidImportStream::vlozPo(QXmlStreamAttributes atributy)
     QSqlQuery query;
     query.exec(queryString);
 
+    QString error=query.lastError().databaseText();
+    if (error!="")
+    {
 
-    qDebug()<<query.lastError() ;
+        qDebug()<<query.lastError().databaseText()<<" "<<query.lastError().driverText() ;
+    }
 
     return 1;
 
@@ -651,12 +655,12 @@ int XmlRopidImportStream::seznamPoznamek(QXmlStreamAttributes atributy, int cisl
     QString retezec= atributy.value("po").toString();
     //   qDebug()<<"retezec dlouhych spoju "<<retezec;
     QStringList seznam= retezec.split(" ");
-   // qDebug()<<"vektor poznamek ma delku: "<<QString::number(seznam.length())<<" prvni element je:"<<seznam.first()<<":";
+    // qDebug()<<"vektor poznamek ma delku: "<<QString::number(seznam.length())<<" prvni element je:"<<seznam.first()<<":";
     QString nazevElementu="x_po";
 
     if(seznam.first()=="")
     {
-      //  qDebug()<<"prvni poznamka je prazdna";
+        //  qDebug()<<"prvni poznamka je prazdna";
         return 0;
     }
     if (seznam.length()>0)
@@ -670,7 +674,7 @@ int XmlRopidImportStream::seznamPoznamek(QXmlStreamAttributes atributy, int cisl
             polozky.push_back(inicializujPolozku("po",seznam.at(j),"Integer"));
             QString queryString=this->slozInsert(nazevElementu,polozky);
             QSqlQuery query;
-           // qDebug().noquote()<<queryString;
+            // qDebug().noquote()<<queryString;
             query.exec(queryString);
         }
     }
