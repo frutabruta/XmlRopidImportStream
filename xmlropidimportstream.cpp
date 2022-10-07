@@ -527,15 +527,19 @@ int XmlRopidImportStream::vlozPo(QXmlStreamAttributes atributy)
     polozky.push_back(inicializujPolozku("jdf",atributy.value("jdf").toString(),"Boolean"));
     polozky.push_back(inicializujPolozku("tt",atributy.value("tt").toString(),"Boolean"));
 
-    polozky.push_back(inicializujPolozku("n",atributy.value("n").toString(),"String"));
+    polozky.push_back(inicializujPolozku("n",atributy.value("n").toString(),"Boolean"));
     polozky.push_back(inicializujPolozku("tn",atributy.value("tn").toString(),"String"));
-    polozky.push_back(inicializujPolozku("nl",atributy.value("nl").toString(),"String"));
-    polozky.push_back(inicializujPolozku("anl",atributy.value("anl").toString(),"Integer"));
+    polozky.push_back(inicializujPolozku("nl",atributy.value("nl").toString(),"Integer"));
+    polozky.push_back(inicializujPolozku("anl",atributy.value("anl").toString(),"String"));
     polozky.push_back(inicializujPolozku("dd",atributy.value("dd").toString(),"Integer"));
-    polozky.push_back(inicializujPolozku("cd",atributy.value("cd").toString(),"String"));
+    polozky.push_back(inicializujPolozku("cd",atributy.value("cd").toString(),"Integer"));
     QString queryString=this->slozInsert(nazevElementu,polozky);
     QSqlQuery query;
+    qDebug().noquote()<<queryString;
     query.exec(queryString);
+
+
+    qDebug()<<query.lastError() ;
 
     return 1;
 
@@ -648,9 +652,15 @@ int XmlRopidImportStream::seznamPoznamek(QXmlStreamAttributes atributy, int cisl
     QString retezec= atributy.value("po").toString();
     //   qDebug()<<"retezec dlouhych spoju "<<retezec;
     QStringList seznam= retezec.split(" ");
+   // qDebug()<<"vektor poznamek ma delku: "<<QString::number(seznam.length())<<" prvni element je:"<<seznam.first()<<":";
     QString nazevElementu="x_po";
 
-    if (seznam.length()>1)
+    if(seznam.first()=="")
+    {
+      //  qDebug()<<"prvni poznamka je prazdna";
+        return 0;
+    }
+    if (seznam.length()>0)
     {
 
         for (int j=0;j<seznam.length();j++)
@@ -661,6 +671,7 @@ int XmlRopidImportStream::seznamPoznamek(QXmlStreamAttributes atributy, int cisl
             polozky.push_back(inicializujPolozku("po",seznam.at(j),"Integer"));
             QString queryString=this->slozInsert(nazevElementu,polozky);
             QSqlQuery query;
+           // qDebug().noquote()<<queryString;
             query.exec(queryString);
         }
     }
@@ -936,6 +947,7 @@ QString XmlRopidImportStream::overString(QString vstup)
     }
     else
     {
+        vstup.replace("\"","\"\"");
         vstup="\""+vstup+"\"";
     }
 

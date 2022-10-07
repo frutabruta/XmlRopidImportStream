@@ -58,7 +58,7 @@ signals:
     void resultReady(const QString &s);
 private:
 
-    void natahniNew(QFile &file);
+    void natahni(QFile &file);
 
     QString overBoolean(QString vstup);
     QString overInteger(QString vstup);
@@ -88,7 +88,7 @@ private:
     int vlozZ(QXmlStreamAttributes atributy);
     int seznamPoznamek(QXmlStreamAttributes atributy, int cisloSpoje, int poradi);
 
-    QVector<int> seznamDlouhychSpojuNew(QXmlStreamAttributes atributy);
+    QVector<int> seznamDlouhychSpoju(QXmlStreamAttributes atributy);
 
 };
 
