@@ -535,7 +535,6 @@ int XmlRopidImportStream::vlozPo(QXmlStreamAttributes atributy)
     polozky.push_back(inicializujPolozku("cd",atributy.value("cd").toString(),"Integer"));
     QString queryString=this->slozInsert(nazevElementu,polozky);
     QSqlQuery query;
-    qDebug().noquote()<<queryString;
     query.exec(queryString);
 
 
