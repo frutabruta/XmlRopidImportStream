@@ -21,7 +21,8 @@ int SqLiteZaklad::pripoj()
     bool ok = otevriDB();
     if (ok==true)
     {
-        emit odesliChybovouHlasku("připojení se povedlo");
+        qDebug()<<"připojení se povedlo";
+        //emit odesliChybovouHlasku("připojení se povedlo");
         return 1;
     }
     else
@@ -44,12 +45,13 @@ int SqLiteZaklad::otevriDB()
         qDebug()<<"podarilo se pripojit k databazi ROPID";
         qDebug()<<"is driver available "<<QString::number(mojeDatabaze.isDriverAvailable("QSQLITE"));
         qDebug()<<"je databaze otevrena "<<QString::number(mojeDatabaze.isOpen());
-        emit odesliChybovouHlasku("je databaze otevrena");
+        //emit odesliChybovouHlasku("je databaze otevrena");
         qDebug()<<"je databaze validni "<<QString::number(mojeDatabaze.isValid());
         return 1;
     }
     else
     {
+        emit odesliChybovouHlasku("DB se nepovedlo otevrit "+mojeDatabaze.lastError().text());
         qDebug()<<"DB se nepovedlo otevrit "<<mojeDatabaze.lastError();
 
     }
