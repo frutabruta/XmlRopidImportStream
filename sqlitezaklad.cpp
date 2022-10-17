@@ -2,8 +2,11 @@
 
 SqLiteZaklad::SqLiteZaklad()
 {
-
+nazevSouboru="data.sqlite";
+cesta=QCoreApplication::applicationDirPath();
+cestaKomplet=cesta+"/"+nazevSouboru;
 }
+
 
 
 int SqLiteZaklad::pripoj()
@@ -14,10 +17,12 @@ int SqLiteZaklad::pripoj()
     //this->mojeDatabaze.setHostName(adresa);
     //this->mojeDatabaze.setPort(3306);
     //this->mojeDatabaze.setHostName("127.0.0.1");
-    QString nazevSouboru="data.sqlite";
-    QString cesta=QCoreApplication::applicationDirPath()+"/"+nazevSouboru;
-    qDebug()<<"cesta:"<<cesta;
-    this->mojeDatabaze.setDatabaseName(cesta);
+
+
+
+
+    qDebug()<<"cesta:"<<cestaKomplet;
+    this->mojeDatabaze.setDatabaseName(cestaKomplet);
     bool ok = otevriDB();
     if (ok==true)
     {
@@ -58,6 +63,62 @@ int SqLiteZaklad::otevriDB()
     return 0;
 }
 
+bool SqLiteZaklad::existujeQueryChyba(QSqlQuery &dotaz)
+{
+    QString chybaDb=dotaz.lastError().databaseText();
+    QString chybaDriver=dotaz.lastError().driverText();
+
+    if((chybaDb=="")&&(chybaDriver==""))
+    {
+        return 0;
+    }
+
+    emit odesliChybovouHlasku("chyba databaze: "+chybaDb+" "+chybaDriver);
+    qDebug()<<"chyba databaze: "<<chybaDb<<" "<<chybaDriver;
+    return 1;
+}
+
+
+bool SqLiteZaklad::zalozSqlTabulku(QString nazevTabulky, QVector<QString> sloupecky)
+{
+    QString queryText="";
+
+    if((nazevTabulky=="")||(sloupecky.isEmpty()))
+    {
+        return false;
+    }
+
+    queryText+="CREATE TABLE  "+nazevTabulky+" ("; //IF NOT EXISTS
+
+    QString vnitrek = vektorStringuOddelovac(sloupecky,",");
+
+    queryText+=" "+vnitrek+" ";
+
+    queryText+=" );";
+    qDebug()<<queryText;
+
+    return spustPrikaz(queryText);
+
+
+
+}
+
+bool SqLiteZaklad::zrusSqlTabulku(QString nazevTabulky, QVector<QString> sloupecky)
+{
+    QString queryText="";
+
+    if((nazevTabulky=="")||(sloupecky.isEmpty()))
+    {
+        return false;
+    }
+
+    queryText+="DROP TABLE IF EXISTS  "+nazevTabulky+" ;";
+    qDebug()<<queryText;
+
+    return spustPrikaz(queryText);
+
+
+}
 
 
 /*!
@@ -131,6 +192,20 @@ QString SqLiteZaklad::doplnNulu(int cislo,int pocetMist)
     return konverze;
 }
 
+bool SqLiteZaklad::spustPrikaz(QString prikaz)
+{
+    QSqlQuery query;
+    query.exec(prikaz);
+
+
+    if(existujeQueryChyba(query))
+    {
+        return 0;
+    }
+
+
+    return 1;
+}
 
 /*!
 
@@ -149,3 +224,117 @@ bool SqLiteZaklad::jeDatumVRozsahu(QDate datum, QDate zacatek, QDate konec)
     }
     return false;
 }
+
+QString SqLiteZaklad::vektorStringuOddelovac(QVector<QString> vstup, QString oddelovac)
+{
+    QString vystup="";
+  //  qDebug()<<"vektorStringu: "<<QString::number(vstup.count());
+    if (vstup.isEmpty())
+    {
+        return "";
+    }
+    if (vstup.count()==1)
+    {
+        return vstup.first();
+    }
+
+    for(int i=0;i<vstup.count()-1;i++)
+    {
+        vystup+=vstup.at(i)+oddelovac;
+    }
+    vystup+=vstup.last();
+    return vystup;
+}
+
+bool SqLiteZaklad::vlozRadekDat(QString nazevTabulky, QVector<QString> hlavicka, QVector<QString> data)
+{
+    QString queryText="";
+
+    queryText+="INSERT INTO "+nazevTabulky+"( ";
+    queryText+=vektorStringuOddelovac(hlavicka,",");
+    queryText+=") VALUES ( ";
+    queryText+=vektorStringuOddelovac(data,",");
+    queryText+=" );";
+
+   // qDebug().noquote()<<queryText;
+
+    return spustPrikaz(queryText);
+
+
+}
+
+
+bool SqLiteZaklad::zahajTransakci()
+{
+    qDebug() <<  Q_FUNC_INFO;
+
+
+    QTextStream errorStream(stderr);
+
+
+    QString staryTag="";
+
+    if(mojeDatabaze.transaction())
+    {
+        return 1;
+    }
+    else
+    {
+        qDebug() << "Failed to start transaction mode";
+        qDebug()<<mojeDatabaze.lastError();
+    }
+    return 0;
+}
+
+
+bool SqLiteZaklad::ukonciTransakci()
+{
+
+
+    if(!mojeDatabaze.commit())
+    {
+        qDebug() << "Failed to commit";
+        mojeDatabaze.rollback();
+        return 0;
+    }
+    return 1;
+}
+
+
+/*
+void XmlRopidImportStream::natahni(QFile &file)
+{
+    qDebug() <<  Q_FUNC_INFO;
+
+    QXmlStreamReader reader(&file);
+    QTextStream errorStream(stderr);
+
+
+    this->databazeStart();
+    QString staryTag="";
+
+    if(ropidSQL.mojeDatabaze.transaction())
+    {
+        reader.readElementText(QXmlStreamReader::IncludeChildElements);
+
+
+        //while inserty
+
+
+        if(!ropidSQL.mojeDatabaze.commit())
+        {
+            qDebug() << "Failed to commit";
+            ropidSQL.mojeDatabaze.rollback();
+        }
+    }
+    else
+    {
+        qDebug() << "Failed to start transaction mode";
+        qDebug()<<ropidSQL.mojeDatabaze.lastError();
+    }
+
+}
+*/
+
+
+
