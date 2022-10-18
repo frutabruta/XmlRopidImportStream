@@ -1,6 +1,6 @@
-#include <QtSql>
 #include "xmlropidimportstream.h"
 
+#include <QtSql>
 #include <QtXml>
 #include <QDebug>
 #include <QMainWindow>
