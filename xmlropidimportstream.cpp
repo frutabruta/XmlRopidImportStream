@@ -777,6 +777,7 @@ int XmlRopidImportStream::vlozZ(QXmlStreamAttributes atributy)
     polozky.push_back(inicializujPolozku("kj",atributy.value("kj").toString(),"String"));
     polozky.push_back(inicializujPolozku("n",atributy.value("n").toString(),"String"));
     polozky.push_back(inicializujPolozku("pop",atributy.value("pop").toString(),"String"));
+    polozky.push_back(inicializujPolozku("tu",atributy.value("tu").toString(),"String"));
     polozky.push_back(inicializujPolozku("cis",atributy.value("cis").toString(),"Integer"));
     polozky.push_back(inicializujPolozku("ois",atributy.value("ois").toString(),"Integer"));
     polozky.push_back(inicializujPolozku("co",atributy.value("co").toString(),"Integer"));
