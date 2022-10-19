@@ -136,6 +136,11 @@ void XmlRopidImportStream::natahni(QFile &file)
                 {
                     vlozM(atributy);
                 }
+
+                else if(reader.name()=="g")
+                {
+                    vlozG(atributy);
+                }
                 else if(reader.name()=="z")
                 {
                     vlozZ(atributy);
@@ -286,6 +291,7 @@ int XmlRopidImportStream::truncateAll()
     truncateTable("`ids`");
     truncateTable("`dd`");
     truncateTable("`d`");
+    truncateTable("`g`");
     truncateTable("`hlavicka`");
 
 
@@ -359,6 +365,22 @@ int XmlRopidImportStream::vlozDd(QXmlStreamAttributes atributy)
     return 1;
 }
 
+
+int XmlRopidImportStream::vlozG(QXmlStreamAttributes atributy)
+{
+    //  qDebug() <<  Q_FUNC_INFO;
+
+    QVector<Navrat> polozky;
+    polozky.push_back(inicializujPolozku("id",atributy.value("id").toString(),"Integer"));
+    polozky.push_back(inicializujPolozku("c",atributy.value("c").toString(),"Integer"));
+    polozky.push_back(inicializujPolozku("kj",atributy.value("kj").toString(),"String"));
+    polozky.push_back(inicializujPolozku("po",atributy.value("po").toString(),"String"));
+    QString queryString=this->slozInsert("g",polozky);
+    QSqlQuery query;
+    query.exec(queryString);
+
+    return 1;
+}
 
 
 int XmlRopidImportStream::vlozCh(QXmlStreamAttributes atributy)

@@ -12,11 +12,11 @@ class XmlRopidImportStream: public QThread
     Q_OBJECT
 
     void run() override {
-            QString result;
-            /* ... here is the expensive or blocking operation ... */
-            slotOtevriSoubor(vstupniXmlSouborCesta);
-            emit resultReady(result);
-        }
+        QString result;
+        /* ... here is the expensive or blocking operation ... */
+        slotOtevriSoubor(vstupniXmlSouborCesta);
+        emit resultReady(result);
+    }
 public:
 
     struct Navrat
@@ -49,6 +49,7 @@ public:
     int indexX=0;
 
     int spocitejRadkySouboru(QString fileName);
+
 public slots:
     void slotOtevriSoubor(QString cesta);
 signals:
@@ -68,6 +69,7 @@ private:
 
     int vlozD(QXmlStreamAttributes atributy);
     int vlozDd(QXmlStreamAttributes atributy);
+    int vlozG(QXmlStreamAttributes atributy);
     int vlozCh(QXmlStreamAttributes atributy);
     int vlozIds(QXmlStreamAttributes atributy);
     int vlozK(QXmlStreamAttributes atributy);
