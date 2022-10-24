@@ -68,16 +68,26 @@ void XmlRopidImportStream::otevriSoubor(QString cesta)
         return;
     }
 
-    natahni(file);
+    bool vysledek=natahni(file);
 
     ropidSQL.zavriDB();
     QTime konec=QTime::currentTime();
+    if(vysledek)
+    {
+        emit odesliChybovouHlasku("Konec importu:"+konec.toString()+" \n import trval vterin: "+QString::number(zacatek.secsTo(konec)) );
 
-    emit odesliChybovouHlasku("Konec importu:"+konec.toString()+" \n import trval vterin: "+QString::number(zacatek.secsTo(konec)) );
+    }
+    else
+    {
+        emit odesliChybovouHlasku("Import selhal :"+konec.toString()+" \n import trval vterin: "+QString::number(zacatek.secsTo(konec)) );
+
+    }
+
+
 }
 
 
-void XmlRopidImportStream::natahni(QFile &file)
+bool XmlRopidImportStream::natahni(QFile &file)
 {
     qDebug() <<  Q_FUNC_INFO;
 
@@ -124,6 +134,16 @@ void XmlRopidImportStream::natahni(QFile &file)
                 {
                     vlozD(atributy);
                 }
+                else if(reader.name()=="x")
+                {
+                    vlozX(atributy,xCounter,aktualniCisloSpoje);
+                }
+
+
+                else if(reader.name()=="t")
+                {
+                    vlozT(atributy);
+                }
                 else if(reader.name()=="dd")
                 {
                     vlozDd(atributy);
@@ -156,6 +176,30 @@ void XmlRopidImportStream::natahni(QFile &file)
                 else if(reader.name()=="k")
                 {
                     vlozK(atributy);
+                }
+                else if(reader.name()=="kr")
+                {
+                    //neni implementovano
+                }
+                else if(reader.name()=="vk")
+                {
+                    //neni implementovano
+                }
+                else if(reader.name()=="tr")
+                {
+                    //neni implementovano
+                }
+                else if(reader.name()=="traj")
+                {
+                    //neni implementovano
+                }
+                else if(reader.name()=="obl")
+                {
+                    //neni implementovano
+                }
+                else if(reader.name()=="bod")
+                {
+                    //neni implementovano
                 }
                 else if(reader.name()=="tv")
                 {
@@ -195,21 +239,25 @@ void XmlRopidImportStream::natahni(QFile &file)
 
                 }
 
-                else if(reader.name()=="x")
-                {
-                    vlozX(atributy,xCounter,aktualniCisloSpoje);
-                }
 
 
-                else if(reader.name()=="t")
+                else if(reader.name()=="v")
                 {
-                    vlozT(atributy);
+                    //neimplementovano
                 }
 
                 else if(reader.name()=="JR_XML_EXP")
                 {
                     vlozPlatnost(atributy, platnostOd, platnostDo);
                 }
+
+                else
+                {
+                    emit odesliChybovouHlasku("Neznámý tag: "+reader.name());
+                    return false;
+                }
+
+
 
                 /*
                     else if(reader.name()=="")
@@ -241,13 +289,20 @@ void XmlRopidImportStream::natahni(QFile &file)
         {
             qDebug() << "Failed to commit";
             ropidSQL.mojeDatabaze.rollback();
+             emit odesliChybovouHlasku("Failed to commit");
+            return false;
         }
     }
     else
     {
         qDebug() << "Failed to start transaction mode";
         qDebug()<<ropidSQL.mojeDatabaze.lastError();
+        emit odesliChybovouHlasku("Failed to start transaction mode");
+       return false;
+
     }
+
+    return true;
 
 }
 
@@ -826,6 +881,7 @@ int XmlRopidImportStream::vlozZ(QXmlStreamAttributes atributy)
     polozky.push_back(inicializujPolozku("xVla",atributy.value("xVla").toString(),"Boolean"));
     polozky.push_back(inicializujPolozku("xLod",atributy.value("xLod").toString(),"Boolean"));
     polozky.push_back(inicializujPolozku("xLet",atributy.value("xLed").toString(),"Boolean"));
+    polozky.push_back(inicializujPolozku("rdisp",atributy.value("rdisp").toString(),"Integer"));
 
     QString queryString=this->slozInsert(nazevElementu,polozky);
     QSqlQuery query;

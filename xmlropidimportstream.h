@@ -59,7 +59,7 @@ signals:
     void resultReady(const QString &s);
 private:
 
-    void natahni(QFile &file);
+    bool natahni(QFile &file);
 
     QString overBoolean(QString vstup);
     QString overInteger(QString vstup);
