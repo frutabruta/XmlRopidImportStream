@@ -45,26 +45,35 @@ int SqLiteZaklad::pripoj()
 int SqLiteZaklad::otevriDB()
 {
     qDebug()<< Q_FUNC_INFO;
-    if(this->mojeDatabaze.open())
+    if(this->mojeDatabaze.isOpen())
     {
-        qDebug()<<"podarilo se pripojit k databazi ROPID";
-        qDebug()<<"is driver available "<<QString::number(mojeDatabaze.isDriverAvailable("QSQLITE"));
-        qDebug()<<"je databaze otevrena "<<QString::number(mojeDatabaze.isOpen());
-        //emit odesliChybovouHlasku("je databaze otevrena");
-        qDebug()<<"je databaze validni "<<QString::number(mojeDatabaze.isValid());
         return 1;
     }
     else
     {
-        emit odesliChybovouHlasku("DB se nepovedlo otevrit "+mojeDatabaze.lastError().text());
-        qDebug()<<"DB se nepovedlo otevrit "<<mojeDatabaze.lastError();
+        if(this->mojeDatabaze.open())
+        {
+            qDebug()<<"podarilo se pripojit k databazi ROPID";
+            qDebug()<<"is driver available "<<QString::number(mojeDatabaze.isDriverAvailable("QSQLITE"));
+            qDebug()<<"je databaze otevrena "<<QString::number(mojeDatabaze.isOpen());
+            //emit odesliChybovouHlasku("je databaze otevrena");
+            qDebug()<<"je databaze validni "<<QString::number(mojeDatabaze.isValid());
+            return 1;
+        }
+        else
+        {
+            emit odesliChybovouHlasku("DB se nepovedlo otevrit "+mojeDatabaze.lastError().text());
+            qDebug()<<"DB se nepovedlo otevrit "<<mojeDatabaze.lastError();
 
+        }
     }
+
     return 0;
 }
 
 bool SqLiteZaklad::existujeQueryChyba(QSqlQuery &dotaz)
 {
+    qDebug()<< Q_FUNC_INFO;
     QString chybaDb=dotaz.lastError().databaseText();
     QString chybaDriver=dotaz.lastError().driverText();
 
@@ -81,6 +90,7 @@ bool SqLiteZaklad::existujeQueryChyba(QSqlQuery &dotaz)
 
 bool SqLiteZaklad::zalozSqlTabulku(QString nazevTabulky, QVector<QString> sloupecky)
 {
+    qDebug()<< Q_FUNC_INFO;
     QString queryText="";
 
     if((nazevTabulky=="")||(sloupecky.isEmpty()))
@@ -105,6 +115,7 @@ bool SqLiteZaklad::zalozSqlTabulku(QString nazevTabulky, QVector<QString> sloupe
 
 bool SqLiteZaklad::zrusSqlTabulku(QString nazevTabulky, QVector<QString> sloupecky)
 {
+    qDebug()<< Q_FUNC_INFO;
     QString queryText="";
 
     if((nazevTabulky=="")||(sloupecky.isEmpty()))
@@ -194,6 +205,7 @@ QString SqLiteZaklad::doplnNulu(int cislo,int pocetMist)
 
 bool SqLiteZaklad::spustPrikaz(QString prikaz)
 {
+    qDebug()<< Q_FUNC_INFO;
     QSqlQuery query;
     query.exec(prikaz);
 
