@@ -74,13 +74,14 @@ void XmlRopidImportStream::otevriSoubor(QString cesta)
     QTime konec=QTime::currentTime();
     if(vysledek)
     {
-        emit odesliChybovouHlasku("Konec importu:"+konec.toString()+" \n import trval vterin: "+QString::number(zacatek.secsTo(konec)) );
+        emit odesliChybovouHlasku("Konec importu: "+konec.toString());
+        emit odesliChybovouHlasku("Doba trvání importu: "+QString::number(zacatek.secsTo(konec))) ;
 
     }
     else
     {
-        emit odesliChybovouHlasku("Import selhal :"+konec.toString()+" \n import trval vterin: "+QString::number(zacatek.secsTo(konec)) );
-
+        emit odesliChybovouHlasku("Import selhal: "+konec.toString() );
+        emit odesliChybovouHlasku("Doba trvání importu: "+QString::number(zacatek.secsTo(konec))) ;
     }
 
 
