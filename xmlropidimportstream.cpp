@@ -39,6 +39,10 @@ XmlRopidImportStream::Navrat XmlRopidImportStream::inicializujPolozku(QString na
     {
         navrat.obsah=overBoolean(obsah);
     }
+    if (navrat.typ=="BooleanInv")
+    {
+        navrat.obsah=overBooleanInv(obsah);
+    }
 
     return navrat;
 }
@@ -105,7 +109,10 @@ bool XmlRopidImportStream::natahni(QFile &file)
 
         int aktualniCisloSpoje=0;
         QXmlStreamAttributes atributyObehu;
+        QXmlStreamAttributes atributyTr;
+        QXmlStreamAttributes atributyTraj;
         int xCounter=0;
+        int bodCounter=0;
 
         QVector<QString> obsah;
 
@@ -135,6 +142,8 @@ bool XmlRopidImportStream::natahni(QFile &file)
                 {
                     vlozD(atributy);
                 }
+
+
                 else if(reader.name()=="x")
                 {
                     vlozX(atributy,xCounter,aktualniCisloSpoje);
@@ -188,10 +197,13 @@ bool XmlRopidImportStream::natahni(QFile &file)
                 }
                 else if(reader.name()=="tr")
                 {
+                    atributyTr=atributy;
                     //neni implementovano
                 }
                 else if(reader.name()=="traj")
                 {
+                    atributyTraj=atributy;
+                    bodCounter=0;
                     //neni implementovano
                 }
                 else if(reader.name()=="obl")
@@ -200,6 +212,7 @@ bool XmlRopidImportStream::natahni(QFile &file)
                 }
                 else if(reader.name()=="bod")
                 {
+                    vlozBod(atributy,atributyTr,atributyTraj,bodCounter);
                     //neni implementovano
                 }
                 else if(reader.name()=="tv")
@@ -349,6 +362,7 @@ int XmlRopidImportStream::truncateAll()
     truncateTable("`d`");
     truncateTable("`g`");
     truncateTable("`hlavicka`");
+    truncateTable("`bod`");
 
 
     emit odesliChybovouHlasku("databaze vymazana");
@@ -972,7 +986,11 @@ int XmlRopidImportStream::vlozX(QXmlStreamAttributes atributy, int &counter, int
     polozky.push_back(inicializujPolozku("o",atributy.value("o").toString(),"Integer"));
     polozky.push_back(inicializujPolozku("t",atributy.value("t").toString(),"String"));
     polozky.push_back(inicializujPolozku("ty",atributy.value("ty").toString(),"Integer"));
-    polozky.push_back(inicializujPolozku("ces",atributy.value("ces").toString(),"Boolean"));
+
+
+    polozky.push_back(inicializujPolozku("ces",atributy.value("ces").toString(),"BooleanInv"));
+   // qDebug().noquote()<<"CES: "<<atributy.value("ces").toString();
+
     polozky.push_back(inicializujPolozku("po",atributy.value("po").toString(),"String"));
     polozky.push_back(inicializujPolozku("zn",atributy.value("zn").toString(),"Boolean"));
     polozky.push_back(inicializujPolozku("na",atributy.value("na").toString(),"Boolean"));
@@ -989,6 +1007,7 @@ int XmlRopidImportStream::vlozX(QXmlStreamAttributes atributy, int &counter, int
     polozky.push_back(inicializujPolozku("zsol",atributy.value("zsol").toString(),"Boolean"));
     polozky.push_back(inicializujPolozku("s1",atributy.value("s1").toString(),"Boolean"));
     polozky.push_back(inicializujPolozku("s2",atributy.value("s2").toString(),"Boolean"));
+    polozky.push_back(inicializujPolozku("var",atributy.value("var").toString(),"Integer"));
 
     QString queryString=this->slozInsert(nazevElementu,polozky);
     QSqlQuery query;
@@ -1000,12 +1019,55 @@ int XmlRopidImportStream::vlozX(QXmlStreamAttributes atributy, int &counter, int
 }
 
 
+int XmlRopidImportStream::vlozBod(QXmlStreamAttributes atributy, QXmlStreamAttributes atributyTr, QXmlStreamAttributes atributyTraj, int &counter)
+{
+    //qDebug() <<  Q_FUNC_INFO;
+    QString nazevElementu="bod";
+
+    QVector<Navrat> polozky;
+    polozky.push_back(inicializujPolozku("zvd",atributyTr.value("zvd").toString(),"Integer"));
+    polozky.push_back(inicializujPolozku("u1",atributyTr.value("u1").toString(),"Integer"));
+    polozky.push_back(inicializujPolozku("z1",atributyTr.value("z1").toString(),"Integer"));
+    polozky.push_back(inicializujPolozku("u2",atributyTr.value("u2").toString(),"Integer"));
+    polozky.push_back(inicializujPolozku("z2",atributyTr.value("z2").toString(),"Integer"));
+    polozky.push_back(inicializujPolozku("var",atributyTr.value("var").toString(),"Integer"));
+    polozky.push_back(inicializujPolozku("kj",atributyTr.value("kj").toString(),"String"));
+    polozky.push_back(inicializujPolozku("c",atributyTraj.value("c").toString(),"Integer"));
+
+
+    polozky.push_back(inicializujPolozku("x",atributy.value("X").toString(),"String"));
+    polozky.push_back(inicializujPolozku("y",atributy.value("Y").toString(),"String"));
+     polozky.push_back(inicializujPolozku("poradi",QString::number(counter),"Integer"));
+
+
+    QString queryString=this->slozInsert(nazevElementu,polozky);
+    QSqlQuery query;
+    query.exec(queryString);
+    //qDebug().noquote()<<queryString;
+    counter++;
+
+    return 1;
+}
+
+
+
 
 QString XmlRopidImportStream::overBoolean(QString vstup)
 {
     if (vstup=="")
     {
         vstup="false";
+    }
+
+
+    return vstup;
+}
+
+QString XmlRopidImportStream::overBooleanInv(QString vstup)
+{
+    if (vstup=="")
+    {
+        vstup="true";
     }
 
 

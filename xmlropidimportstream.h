@@ -50,6 +50,7 @@ public:
 
     int spocitejRadkySouboru(QString fileName);
 
+
 public slots:
     void slotOtevriSoubor(QString cesta);
 signals:
@@ -62,11 +63,13 @@ private:
     bool natahni(QFile &file);
 
     QString overBoolean(QString vstup);
+      QString overBooleanInv(QString vstup);
     QString overInteger(QString vstup);
     QString overString(QString vstup);
     QString slozInsert(QString nazevTabulky, QVector<Navrat>);
     QString vytvorCas(QString vstup);
 
+    int vlozBod(QXmlStreamAttributes atributy, QXmlStreamAttributes atributyTr, QXmlStreamAttributes atributyTraj, int &counter);
     int vlozD(QXmlStreamAttributes atributy);
     int vlozDd(QXmlStreamAttributes atributy);
     int vlozG(QXmlStreamAttributes atributy);
@@ -91,6 +94,7 @@ private:
     int seznamPoznamek(QXmlStreamAttributes atributy, int cisloSpoje, int poradi);
 
     QVector<int> seznamDlouhychSpoju(QXmlStreamAttributes atributy);
+
 
 };
 
