@@ -43,12 +43,16 @@ public:
 
     void otevriSoubor(QString cesta);
 
+    QString slozInsert(QString nazevTabulky, QVector<Navrat>); //public kvůli RopidUkolovnik
+
     int truncateTable(QString tabulka);
     int truncateAll();
 
     int indexX=0;
 
     int spocitejRadkySouboru(QString fileName);
+
+
 
 
 public slots:
@@ -66,7 +70,7 @@ private:
       QString overBooleanInv(QString vstup);
     QString overInteger(QString vstup);
     QString overString(QString vstup);
-    QString slozInsert(QString nazevTabulky, QVector<Navrat>);
+
     QString vytvorCas(QString vstup);
 
     int vlozBod(QXmlStreamAttributes atributy, QXmlStreamAttributes atributyTr, QXmlStreamAttributes atributyTraj, int &counter);
