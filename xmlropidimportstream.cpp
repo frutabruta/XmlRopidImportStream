@@ -320,7 +320,22 @@ bool XmlRopidImportStream::natahni(QFile &file)
 
 }
 
+int XmlRopidImportStream::vacuum()
+{
+    qDebug() <<  Q_FUNC_INFO;
+    ropidSQL.pripoj();
 
+    QString queryString = ("VACUUM;");
+
+    qDebug().noquote()<<queryString;
+    QSqlQuery query;
+    query.exec(queryString);
+
+    emit odesliChybovouHlasku("databaze zmensena");
+    ropidSQL.zavriDB();
+    return 1;
+
+}
 
 
 int XmlRopidImportStream::truncateTable(QString tabulka)

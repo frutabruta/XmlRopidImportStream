@@ -55,6 +55,7 @@ public:
 
 
 
+    int vacuum();
 public slots:
     void slotOtevriSoubor(QString cesta);
 signals:
