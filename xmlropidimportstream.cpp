@@ -138,116 +138,116 @@ bool XmlRopidImportStream::natahni(QFile &file)
                     emit odesliChybovouHlasku(hlaska);
                 }
 
-                if(reader.name()=="d")
+                if(reader.name()==QString("d"))
                 {
                     vlozD(atributy);
                 }
 
 
-                else if(reader.name()=="x")
+                else if(reader.name()==QString("x"))
                 {
                     vlozX(atributy,xCounter,aktualniCisloSpoje);
                 }
 
 
-                else if(reader.name()=="t")
+                else if(reader.name()==QString("t"))
                 {
                     vlozT(atributy);
                 }
-                else if(reader.name()=="dd")
+                else if(reader.name()==QString("dd"))
                 {
                     vlozDd(atributy);
                 }
-                else if(reader.name()=="ids")
+                else if(reader.name()==QString("ids"))
                 {
                     vlozIds(atributy);
                 }
-                else if(reader.name()=="m")
+                else if(reader.name()==QString("m"))
                 {
                     vlozM(atributy);
                 }
 
-                else if(reader.name()=="g")
+                else if(reader.name()==QString("g"))
                 {
                     vlozG(atributy);
                 }
-                else if(reader.name()=="z")
+                else if(reader.name()==QString("z"))
                 {
                     vlozZ(atributy);
                 }
-                else if(reader.name()=="p")
+                else if(reader.name()==QString("p"))
                 {
                     vlozP(atributy);
                 }
-                else if(reader.name()=="l")
+                else if(reader.name()==QString("l"))
                 {
                     vlozL(atributy);
                 }
-                else if(reader.name()=="k")
+                else if(reader.name()==QString("k"))
                 {
                     vlozK(atributy);
                 }
-                else if(reader.name()=="kr")
+                else if(reader.name()==QString("kr"))
                 {
                     //neni implementovano
                 }
-                else if(reader.name()=="vk")
+                else if(reader.name()==QString("vk"))
                 {
                     //neni implementovano
                 }
-                else if(reader.name()=="tr")
+                else if(reader.name()==QString("tr"))
                 {
                     atributyTr=atributy;
                     //neni implementovano
                 }
-                else if(reader.name()=="traj")
+                else if(reader.name()==QString("traj"))
                 {
                     atributyTraj=atributy;
                     bodCounter=0;
                     //neni implementovano
                 }
-                else if(reader.name()=="obl")
+                else if(reader.name()==QString("obl"))
                 {
                     //neni implementovano
                 }
-                else if(reader.name()=="bod")
+                else if(reader.name()==QString("bod"))
                 {
                     vlozBod(atributy,atributyTr,atributyTraj,bodCounter);
                     //neni implementovano
                 }
-                else if(reader.name()=="tv")
+                else if(reader.name()==QString("tv"))
                 {
                     vlozTv(atributy);
                 }
-                else if(reader.name()=="ty")
+                else if(reader.name()==QString("ty"))
                 {
                     vlozTy(atributy);
                 }
-                else if(reader.name()=="ch")
+                else if(reader.name()==QString("ch"))
                 {
                     vlozCh(atributy);
                 }
-                else if(reader.name()=="r")
+                else if(reader.name()==QString("r"))
                 {
                     vlozR(atributy);
                 }
-                else if(reader.name()=="po")
+                else if(reader.name()==QString("po"))
                 {
                     vlozPo(atributy);
                 }
 
-                else if(reader.name()=="o")
+                else if(reader.name()==QString("o"))
                 {
                     atributyObehu=atributy;
                     vlozO(atributy);
                 }
 
-                else if(reader.name()=="ds")
+                else if(reader.name()==QString("ds"))
                 {
                     navazneSpojeObehu.append(seznamDlouhychSpoju(atributy));
                 }
 
-                else if(reader.name()=="s")
+                else if(reader.name()==QString("s"))
                 {
                     aktualniCisloSpoje=vlozS(atributy);
 
@@ -255,19 +255,19 @@ bool XmlRopidImportStream::natahni(QFile &file)
 
 
 
-                else if(reader.name()=="v")
+                else if(reader.name()==QString("v"))
                 {
                     //neimplementovano
                 }
 
-                else if(reader.name()=="JR_XML_EXP")
+                else if(reader.name()==QString("JR_XML_EXP"))
                 {
                     vlozPlatnost(atributy, platnostOd, platnostDo);
                 }
 
                 else
                 {
-                    emit odesliChybovouHlasku("Neznámý tag: "+reader.name());
+                    emit odesliChybovouHlasku("Neznámý tag: "+reader.name().toString());
                     return false;
                 }
 
@@ -284,12 +284,12 @@ bool XmlRopidImportStream::natahni(QFile &file)
             }
             else if(currentToken=="EndElement")
             {
-                if(reader.name()=="s")
+                if(reader.name()==QString("s"))
                 {
                     aktualniCisloSpoje=0;
                     xCounter=0;
                 }
-                if(reader.name()=="o")
+                if(reader.name()==QString("o"))
                 {
                     vlozSpPo(atributyObehu,navazneSpojeObehu);
                 }
