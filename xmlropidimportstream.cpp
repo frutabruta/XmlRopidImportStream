@@ -131,7 +131,7 @@ bool XmlRopidImportStream::natahni(QFile &file)
 
                 if((staryTag!=reader.name().toString())&&(!obsah.contains(reader.name().toString())))
                 {
-                    QString hlaska="Zpracovavam tag: "+reader.name().toString();
+                    QString hlaska="Zpracovávám tag: "+reader.name().toString();
                     qDebug()<<hlaska;
                     staryTag=reader.name().toString();
                     obsah.push_back(staryTag);
