@@ -23,7 +23,6 @@ public:
     //funkce 
     //QString slozInsert(QString nazevTabulky, QVector<Navrat>); //public kvůli RopidUkolovnik
     int truncateAll();
-    int vacuum();
     void otevriSoubor(QString cesta);
 public slots:
     void slotOtevriSoubor(QString cesta);

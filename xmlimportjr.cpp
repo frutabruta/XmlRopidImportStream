@@ -921,9 +921,14 @@ int XmlImportJr::vlozT(QXmlStreamAttributes atributy)
     polozky.push_back(inicializujPolozku("btn",atributy.value("btn").toString(),"String"));
     polozky.push_back(inicializujPolozku("ctm",atributy.value("ctm").toString(),"String"));
     polozky.push_back(inicializujPolozku("ctn",atributy.value("ctn").toString(),"String"));
+    polozky.push_back(inicializujPolozku("ztm",atributy.value("ztm").toString(),"String"));
+    polozky.push_back(inicializujPolozku("ztn",atributy.value("ztn").toString(),"String"));
     polozky.push_back(inicializujPolozku("lcdm",atributy.value("lcdm").toString(),"String"));
-    polozky.push_back(inicializujPolozku("lcdn",atributy.value("lcdn").toString(),"String"));
+    polozky.push_back(inicializujPolozku("lcdn",atributy.value("lcdn").toString(),"String"));    
     polozky.push_back(inicializujPolozku("hl",atributy.value("hl").toString(),"String"));
+    polozky.push_back(inicializujPolozku("n",atributy.value("n").toString(),"String"));
+    polozky.push_back(inicializujPolozku("nf",atributy.value("nf").toString(),"String"));
+  
     QString queryString=this->slozInsert(nazevElementu,polozky);
     QSqlQuery query;
     query.exec(queryString);
