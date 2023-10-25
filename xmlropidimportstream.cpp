@@ -34,7 +34,7 @@ XmlRopidImportStream::Navrat XmlRopidImportStream::inicializujPolozku(QString na
     {
         navrat.obsah=overBoolean(obsah);
     }
-     if (navrat.typ=="BooleanInv")
+    if (navrat.typ=="BooleanInv")
     {
         navrat.obsah=overBooleanInv(obsah);
     }
@@ -223,7 +223,7 @@ void XmlRopidImportStream::vlozPoleAtributu(QString nazevTabulky, QMap<QString,Q
     QString queryString=this->slozInsert(nazevTabulky,polozky);
 
     QSqlQuery query;
-   // qDebug().noquote()<<queryString ;//<<" pocet polozek"<<atributy.count();
+    // qDebug().noquote()<<queryString ;//<<" pocet polozek"<<atributy.count();
     query.exec(queryString);
     sqLiteZaklad.existujeQueryChyba(query);
 

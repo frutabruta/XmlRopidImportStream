@@ -239,7 +239,7 @@ bool XmlImportJr::natahni(QFile &file)
                 else
                 {
                     emit odesliChybovouHlasku("Neznámý tag: "+reader.name().toString());
-                    return false;
+                    //return false;
                 }
 
 
