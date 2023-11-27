@@ -55,7 +55,7 @@ int SqLiteZaklad::otevriDB()
         {
             qDebug()<<"podarilo se pripojit k databazi ROPID";
             qDebug()<<"is driver available "<<QString::number(mojeDatabaze.isDriverAvailable("QSQLITE"));
-            qDebug()<<"je databaze otevrena "<<QString::number(mojeDatabaze.isOpen());
+            //qDebug()<<"je databaze otevrena "<<QString::number(mojeDatabaze.isOpen());
             //emit odesliChybovouHlasku("je databaze otevrena");
             qDebug()<<"je databaze validni "<<QString::number(mojeDatabaze.isValid());
             return 1;

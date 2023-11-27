@@ -2,6 +2,8 @@
 Qt library to import Ropid XML to SQLite database (QXmlStreamReader version)
 
 ## Changelog
+- 20231127
+    - row id removed from table z (conflicted with row id)
 - 20231025
     - xmlimportjr: unknown tag does not stop import
 - 20230921
