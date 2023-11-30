@@ -2,6 +2,15 @@
 Qt library to import Ropid XML to SQLite database (QXmlStreamReader version)
 
 ## Changelog
+- 20231130    
+    - new imported columns:
+        - d.ico (now integer), d.tel, d.teli        
+        - z.n2, z.n3, z.n4, z.n5, z.n6, z.n7, z.n8, z.ois2, z.cco, z.nco
+        - z.sy (value fix), z.ve, z.xD
+        - s.icls
+    - data.sqlite
+        - tables modification
+
 - 20231129
     - data.sqlite
         - fix of accidental removal of APC tables (apc_dpp and apc_opv)
