@@ -24,6 +24,9 @@ public:
     //QString slozInsert(QString nazevTabulky, QVector<Navrat>); //public kvůli RopidUkolovnik
     int truncateAll();
     void otevriSoubor(QString cesta);
+    int truncateApc();
+    int truncateTimetables();
+    int truncateTasks();
 public slots:
     void slotOtevriSoubor(QString cesta);
 signals:

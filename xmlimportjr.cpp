@@ -299,6 +299,43 @@ bool XmlImportJr::natahni(QFile &file)
 int XmlImportJr::truncateAll()
 {
     qDebug() <<  Q_FUNC_INFO;
+
+
+    //  truncateTable("``");
+
+    truncateTimetables();
+    truncateApc();
+    truncateTasks();
+
+    emit odesliChybovouHlasku("all data deleted");
+
+    return 1;
+
+
+}
+
+
+int XmlImportJr::truncateApc()
+{
+    qDebug() <<  Q_FUNC_INFO;
+    sqLiteZaklad.pripoj();
+
+    //  truncateTable("``");
+
+    truncateTable("`apc_dpp`");
+    truncateTable("`apc_opv`");
+
+    emit odesliChybovouHlasku("apc data deleted");
+    sqLiteZaklad.zavriDB();
+    return 1;
+
+
+}
+
+
+int XmlImportJr::truncateTimetables()
+{
+    qDebug() <<  Q_FUNC_INFO;
     sqLiteZaklad.pripoj();
 
     //  truncateTable("``");
@@ -326,8 +363,24 @@ int XmlImportJr::truncateAll()
     truncateTable("`hlavicka`");
     truncateTable("`bod`");
 
+    emit odesliChybovouHlasku("timetables data deleted");
+    sqLiteZaklad.zavriDB();
+    return 1;
+}
 
-    emit odesliChybovouHlasku("databaze vymazana");
+
+
+int XmlImportJr::truncateTasks()
+{
+    qDebug() <<  Q_FUNC_INFO;
+    sqLiteZaklad.pripoj();
+
+    //  truncateTable("``");
+
+    truncateTable("`ukoly_zaznam`");
+    truncateTable("`ukoly_zaznam_dopravce`");
+
+    emit odesliChybovouHlasku("tasks data deleted");
     sqLiteZaklad.zavriDB();
     return 1;
 
