@@ -480,6 +480,8 @@ int XmlImportJr::vlozG(QXmlStreamAttributes atributy)
     polozky.push_back(inicializujPolozku("c",atributy.value("c").toString(),"Integer"));
     polozky.push_back(inicializujPolozku("kj",atributy.value("kj").toString(),"String"));
     polozky.push_back(inicializujPolozku("po",atributy.value("po").toString(),"String"));
+    polozky.push_back(inicializujPolozku("zvd",atributy.value("zvd").toString(),"Integer"));
+    polozky.push_back(inicializujPolozku("pd",atributy.value("pd").toString(),"String"));
     QString queryString=this->slozInsert("g",polozky);
     QSqlQuery query;
     query.exec(queryString);
@@ -1026,22 +1028,36 @@ int XmlImportJr::vlozX(QXmlStreamAttributes atributy, int &counter, int cisloSpo
 
     polozky.push_back(inicializujPolozku("po",atributy.value("po").toString(),"String"));
     polozky.push_back(inicializujPolozku("zn",atributy.value("zn").toString(),"Boolean"));
-    polozky.push_back(inicializujPolozku("na",atributy.value("na").toString(),"Boolean"));
     polozky.push_back(inicializujPolozku("vyst",atributy.value("vyst").toString(),"Boolean"));
     polozky.push_back(inicializujPolozku("nast",atributy.value("nast").toString(),"Boolean"));
-    polozky.push_back(inicializujPolozku("xA",atributy.value("xA").toString(),"Boolean"));
+     polozky.push_back(inicializujPolozku("na",atributy.value("na").toString(),"Boolean"));
+     polozky.push_back(inicializujPolozku("poj",atributy.value("poj").toString(),"Boolean"));
+     polozky.push_back(inicializujPolozku("bp",atributy.value("bp").toString(),"Boolean"));
+     polozky.push_back(inicializujPolozku("zpl",atributy.value("zpl").toString(),"Boolean"));
+     polozky.push_back(inicializujPolozku("kpl",atributy.value("kpl").toString(),"Boolean"));
+     polozky.push_back(inicializujPolozku("s",atributy.value("s").toString(),"Boolean"));
+     polozky.push_back(inicializujPolozku("dm",atributy.value("dm").toString(),"Boolean"));
+     polozky.push_back(inicializujPolozku("s1",atributy.value("s1").toString(),"Boolean"));
+     polozky.push_back(inicializujPolozku("s2",atributy.value("s2").toString(),"Boolean"));
+     polozky.push_back(inicializujPolozku("oc",atributy.value("oc").toString(),"Boolean"));
+     polozky.push_back(inicializujPolozku("xA",atributy.value("xA").toString(),"Boolean"));
     polozky.push_back(inicializujPolozku("xB",atributy.value("xB").toString(),"Boolean"));
     polozky.push_back(inicializujPolozku("xC",atributy.value("xC").toString(),"Boolean"));
-    polozky.push_back(inicializujPolozku("xD",atributy.value("xC").toString(),"Boolean"));
+    polozky.push_back(inicializujPolozku("xD",atributy.value("xD").toString(),"Boolean"));
+    polozky.push_back(inicializujPolozku("xS",atributy.value("xS").toString(),"Boolean"));
+    polozky.push_back(inicializujPolozku("xTra",atributy.value("xTra").toString(),"Boolean"));
+    polozky.push_back(inicializujPolozku("xBus",atributy.value("xBus").toString(),"Boolean"));
+    polozky.push_back(inicializujPolozku("xTro",atributy.value("xTro").toString(),"Boolean"));
     polozky.push_back(inicializujPolozku("xVla",atributy.value("xVla").toString(),"Boolean"));
     polozky.push_back(inicializujPolozku("xLod",atributy.value("xLod").toString(),"Boolean"));
     polozky.push_back(inicializujPolozku("xLet",atributy.value("xLed").toString(),"Boolean"));
+    polozky.push_back(inicializujPolozku("xLan",atributy.value("xLan").toString(),"Boolean"));
     polozky.push_back(inicializujPolozku("xorder",QString::number(counter),"Integer"));
     polozky.push_back(inicializujPolozku("zsol",atributy.value("zsol").toString(),"Boolean"));
     polozky.push_back(inicializujPolozku("icls",atributy.value("icls").toString(),"Integer"));
-    polozky.push_back(inicializujPolozku("s1",atributy.value("s1").toString(),"Boolean"));
-    polozky.push_back(inicializujPolozku("s2",atributy.value("s2").toString(),"Boolean"));
+
     polozky.push_back(inicializujPolozku("var",atributy.value("var").toString(),"Integer"));
+    polozky.push_back(inicializujPolozku("nev",atributy.value("nev").toString(),"Boolean"));
 
     QString queryString=this->slozInsert(nazevElementu,polozky);
     QSqlQuery query;
