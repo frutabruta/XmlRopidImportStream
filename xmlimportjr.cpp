@@ -947,6 +947,7 @@ int XmlImportJr::vlozS(QXmlStreamAttributes atributy)
     polozky.push_back(inicializujPolozku("zvd",atributy.value("zvd").toString(),"Integer"));
     polozky.push_back(inicializujPolozku("l",atributy.value("l").toString(),"Integer"));
     polozky.push_back(inicializujPolozku("p",atributy.value("p").toString(),"Integer"));
+    polozky.push_back(inicializujPolozku("sm",atributy.value("sm").toString(),"BooleanInv"));
     polozky.push_back(inicializujPolozku("dd",atributy.value("dd").toString(),"Integer"));
     polozky.push_back(inicializujPolozku("pr",atributy.value("pr").toString(),"Integer"));
     polozky.push_back(inicializujPolozku("d",atributy.value("d").toString(),"Integer"));
@@ -954,6 +955,7 @@ int XmlImportJr::vlozS(QXmlStreamAttributes atributy)
     polozky.push_back(inicializujPolozku("kj",atributy.value("kj").toString(),"String"));
     polozky.push_back(inicializujPolozku("ty",atributy.value("ty").toString(),"Integer"));
     polozky.push_back(inicializujPolozku("ch",atributy.value("ch").toString(),"Integer"));
+    polozky.push_back(inicializujPolozku("np",atributy.value("np").toString(),"Boolean"));
     polozky.push_back(inicializujPolozku("ids",atributy.value("ids").toString(),"Boolean"));
     polozky.push_back(inicializujPolozku("vy",atributy.value("vy").toString(),"Boolean"));
     polozky.push_back(inicializujPolozku("man",atributy.value("man").toString(),"Boolean"));
