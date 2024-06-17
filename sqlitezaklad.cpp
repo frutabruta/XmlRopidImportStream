@@ -162,6 +162,10 @@ int SqLiteZaklad::zavriDB()
 */
 QString SqLiteZaklad::vytvorCasHodinyMinuty(QString vstup)
 {
+    if(vstup.isEmpty())
+    {
+        return "";
+    }
     // qDebug()<<"SqlPraceRopid::vytvorCas";
     int cislo=vstup.toInt();
     cislo=cislo%86400; //oprava pro spoje jedoucí přes půlnoc

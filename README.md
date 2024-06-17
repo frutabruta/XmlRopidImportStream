@@ -2,6 +2,10 @@
 Qt library to import Ropid XML to SQLite database (QXmlStreamReader version)
 
 ## Changelog
+- 20240617
+    - SqLiteZaklad
+        - SqLiteZaklad::vytvorCasHodinyMinuty
+            - if value from DB is empty string, returns empty string (used to return 00:00)
 - 20240514
     - XmlImportJr::vlozS
         - added import of columms: sm, np
