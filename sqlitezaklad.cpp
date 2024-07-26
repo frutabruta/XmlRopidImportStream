@@ -13,7 +13,7 @@ int SqLiteZaklad::pripoj()
 
 {
     qDebug()<< Q_FUNC_INFO;
-    this->mojeDatabaze = QSqlDatabase::addDatabase("QSQLITE");
+
     //this->mojeDatabaze.setHostName(adresa);
     //this->mojeDatabaze.setPort(3306);
     //this->mojeDatabaze.setHostName("127.0.0.1");
@@ -22,7 +22,7 @@ int SqLiteZaklad::pripoj()
 
 
     qDebug()<<"cesta:"<<cestaKomplet;
-    this->mojeDatabaze.setDatabaseName(cestaKomplet);
+
     bool ok = otevriDB();
     if (ok==true)
     {
@@ -51,6 +51,8 @@ int SqLiteZaklad::otevriDB()
     }
     else
     {
+        this->mojeDatabaze = QSqlDatabase::addDatabase("QSQLITE");
+        this->mojeDatabaze.setDatabaseName(cestaKomplet);
         if(this->mojeDatabaze.open())
         {
             qDebug()<<"podarilo se pripojit k databazi ROPID";

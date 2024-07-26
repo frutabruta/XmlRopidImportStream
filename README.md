@@ -2,6 +2,9 @@
 Qt library to import Ropid XML to SQLite database (QXmlStreamReader version)
 
 ## Changelog
+- 20240726
+    - fix of "QSqlDatabasePrivate::database: requested database does not belong to the calling thread." in RopidXmlTools 
+    - this->mojeDatabaze = QSqlDatabase::addDatabase("QSQLITE"); moved from SqLiteZaklad::pripoj() to SqLiteZaklad::otevriDB()
 - 20240617
     - SqLiteZaklad
         - SqLiteZaklad::vytvorCasHodinyMinuty
