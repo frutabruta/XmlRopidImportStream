@@ -27,10 +27,11 @@ public:
     int truncateApc();
     int truncateTimetables();
     int truncateTasks();
+
 public slots:
     void slotOtevriSoubor(QString cesta);
 signals:
-   // void resultReady(const QString &s);
+         // void resultReady(const QString &s);
 private:
 
     bool natahni(QFile &file);   
@@ -45,8 +46,9 @@ private:
     int vlozL(QXmlStreamAttributes atributy);
     int vlozM(QXmlStreamAttributes atributy);
     int vlozO(QXmlStreamAttributes atributy);
+    int vlozObl(QXmlStreamAttributes atributy);
     int vlozP(QXmlStreamAttributes atributy);
-    int vlozPlatnost(QXmlStreamAttributes atributy, QDate &plOd, QDate &plDo);
+    int vlozPlatnost(QXmlStreamAttributes atributy, QDate &plOd, QDate &plDo, QString fileName);
     int vlozPo(QXmlStreamAttributes atributy);
     int vlozR(QXmlStreamAttributes atributy);
     int vlozS(QXmlStreamAttributes atributy);

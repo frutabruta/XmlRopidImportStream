@@ -2,6 +2,51 @@
 Qt library to import Ropid XML to SQLite database (QXmlStreamReader version)
 
 ## Changelog
+- 20241230
+    - XML version 1.37 and 1.38 compatiblity changes
+    - data.sqlite
+        - table hlavicka
+            - new value exp
+            - new value ver (starting from version 1.37)
+            - new value filepath
+        - table z
+            - new value kmen (starting from version 1.37)
+            - new value neprep (starting from version 1.37)
+        - table s
+            - new value skol (starting from version 1.37) 
+            - new value lc (starting from version ???) 
+            - new value obl (starting from version 1.38) 
+            - new value jk (starting from version ???) 
+            - new value sp1 (starting from version ???) 
+            - new value spN (starting from version ???) 
+            - new value doh (starting from version ???) 
+            - new value pos (starting from version ???) 
+            - new value skol (starting from version ???) 
+        - table po (added as a draft for future XML release (1.39?))
+            - new value thls
+            - new value tpan
+            - new value kan
+            - new value akce
+            - new value zkr3 (starting from version ???)
+            - new value vjr (starting from version ???)
+            - new value u (starting from version ???)
+            - new value z (starting from version ???)
+            - new value u2 (starting from version ???)
+            - new value z2 (starting from version ???)
+            - new value usm (starting from version ???)
+            - new value mind (starting from version ???)
+
+        - table o
+            - new value vyb (starting from version 1.37) 
+        - table x
+            - new value neozn (starting from version 1.38) 
+            - new value zast (starting from version 1.38) 
+        - new table obl
+    - XmlImportJr
+        - import obl
+        - added obl to truncateTimetables
+        - import new table values (same as added in data.sqlite)
+
 - 20240726
     - fix of "QSqlDatabasePrivate::database: requested database does not belong to the calling thread." in RopidXmlTools 
     - this->mojeDatabaze = QSqlDatabase::addDatabase("QSQLITE"); moved from SqLiteZaklad::pripoj() to SqLiteZaklad::otevriDB()

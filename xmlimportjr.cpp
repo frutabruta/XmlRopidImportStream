@@ -179,7 +179,7 @@ bool XmlImportJr::natahni(QFile &file)
                 }
                 else if(reader.name()==QString("obl"))
                 {
-                    //neni implementovano
+                    vlozObl(atributy);
                 }
                 else if(reader.name()==QString("bod"))
                 {
@@ -233,7 +233,7 @@ bool XmlImportJr::natahni(QFile &file)
 
                 else if(reader.name()==QString("JR_XML_EXP"))
                 {
-                    vlozPlatnost(atributy, platnostOd, platnostDo);
+                    vlozPlatnost(atributy, platnostOd, platnostDo,file.fileName());
                 }
 
                 else
@@ -360,6 +360,7 @@ int XmlImportJr::truncateTimetables()
     truncateTable("`dd`");
     truncateTable("`d`");
     truncateTable("`g`");
+    truncateTable("`obl`");
     truncateTable("`hlavicka`");
     truncateTable("`bod`");
 
@@ -594,6 +595,27 @@ int XmlImportJr::vlozO(QXmlStreamAttributes atributy)
     polozky.push_back(inicializujPolozku("sp",atributy.value("sp").toString(),"String"));
     polozky.push_back(inicializujPolozku("tv",atributy.value("tv").toString(),"Integer"));
     polozky.push_back(inicializujPolozku("td",atributy.value("td").toString(),"Integer"));
+    polozky.push_back(inicializujPolozku("vyb",atributy.value("vyb").toString(),"String"));
+    QString queryString=this->slozInsert(nazevElementu,polozky);
+    QSqlQuery query;
+    query.exec(queryString);
+
+    return 1;
+
+}
+
+
+int XmlImportJr::vlozObl(QXmlStreamAttributes atributy)
+{
+    //  qDebug() <<  Q_FUNC_INFO;
+    QString nazevElementu="obl";
+
+    QVector<Navrat> polozky;
+
+    polozky.push_back(inicializujPolozku("id",atributy.value("id").toString(),"Integer"));
+    polozky.push_back(inicializujPolozku("n",atributy.value("n").toString(),"String"));
+    polozky.push_back(inicializujPolozku("z",atributy.value("z").toString(),"String"));
+
 
     QString queryString=this->slozInsert(nazevElementu,polozky);
     QSqlQuery query;
@@ -605,7 +627,7 @@ int XmlImportJr::vlozO(QXmlStreamAttributes atributy)
 
 
 
-int XmlImportJr::vlozPlatnost(QXmlStreamAttributes atributy, QDate &plOd, QDate &plDo)
+int XmlImportJr::vlozPlatnost(QXmlStreamAttributes atributy, QDate &plOd, QDate &plDo, QString fileName)
 {
     //   qDebug() <<  Q_FUNC_INFO;
 
@@ -621,6 +643,9 @@ int XmlImportJr::vlozPlatnost(QXmlStreamAttributes atributy, QDate &plOd, QDate 
     polozky.push_back(inicializujPolozku("od",atributy.value("od").toString(),"String"));
     polozky.push_back(inicializujPolozku("do",atributy.value("do").toString(),"String"));
     polozky.push_back(inicializujPolozku("režim",atributy.value("režim").toString(),"String"));
+    polozky.push_back(inicializujPolozku("exp",atributy.value("exp").toString(),"String"));
+    polozky.push_back(inicializujPolozku("ver",atributy.value("ver").toString(),"String"));
+    polozky.push_back(inicializujPolozku("filepath",fileName,"String"));
     QString queryString=this->slozInsert("hlavicka",polozky);
     QSqlQuery query;
     query.exec(queryString);
@@ -648,20 +673,29 @@ int XmlImportJr::vlozPo(QXmlStreamAttributes atributy)
     polozky.push_back(inicializujPolozku("t",atributy.value("t").toString(),"String"));
     polozky.push_back(inicializujPolozku("zkr1",atributy.value("zkr1").toString(),"String"));
     polozky.push_back(inicializujPolozku("zkr2",atributy.value("zkr2").toString(),"String"));
+    polozky.push_back(inicializujPolozku("zkr3",atributy.value("zkr3").toString(),"String"));
     polozky.push_back(inicializujPolozku("ois",atributy.value("ois").toString(),"Boolean"));
     polozky.push_back(inicializujPolozku("zjr",atributy.value("zjr").toString(),"Boolean"));
     polozky.push_back(inicializujPolozku("csad",atributy.value("csad").toString(),"Boolean"));
+    polozky.push_back(inicializujPolozku("vjr",atributy.value("vjr").toString(),"Boolean"));
     polozky.push_back(inicializujPolozku("ljr",atributy.value("ljr").toString(),"Boolean"));
     polozky.push_back(inicializujPolozku("kjr",atributy.value("kjr").toString(),"Boolean"));
     polozky.push_back(inicializujPolozku("jdf",atributy.value("jdf").toString(),"Boolean"));
-    polozky.push_back(inicializujPolozku("tt",atributy.value("tt").toString(),"Boolean"));
-
+    polozky.push_back(inicializujPolozku("tt",atributy.value("tt").toString(),"Boolean"));    
     polozky.push_back(inicializujPolozku("n",atributy.value("n").toString(),"Boolean"));
     polozky.push_back(inicializujPolozku("tn",atributy.value("tn").toString(),"String"));
+    polozky.push_back(inicializujPolozku("u",atributy.value("u").toString(),"Integer"));
+    polozky.push_back(inicializujPolozku("z",atributy.value("z").toString(),"Integer"));
+    polozky.push_back(inicializujPolozku("u2",atributy.value("u2").toString(),"Integer"));
+    polozky.push_back(inicializujPolozku("z2",atributy.value("z2").toString(),"Integer"));
     polozky.push_back(inicializujPolozku("nl",atributy.value("nl").toString(),"Integer"));
     polozky.push_back(inicializujPolozku("anl",atributy.value("anl").toString(),"String"));
-    polozky.push_back(inicializujPolozku("dd",atributy.value("dd").toString(),"Integer"));
     polozky.push_back(inicializujPolozku("cd",atributy.value("cd").toString(),"Integer"));
+    polozky.push_back(inicializujPolozku("usm",atributy.value("usm").toString(),"Integer"));
+    polozky.push_back(inicializujPolozku("zsm",atributy.value("zsm").toString(),"Integer"));
+    polozky.push_back(inicializujPolozku("dd",atributy.value("dd").toString(),"Integer"));
+    polozky.push_back(inicializujPolozku("mind",atributy.value("mind").toString(),"Integer"));
+
     QString queryString=this->slozInsert(nazevElementu,polozky);
     QSqlQuery query;
     query.exec(queryString);
@@ -867,6 +901,7 @@ int XmlImportJr::vlozP(QXmlStreamAttributes atributy)
     polozky.push_back(inicializujPolozku("telv",atributy.value("telg").toString(),"String"));
     polozky.push_back(inicializujPolozku("telg",atributy.value("telv").toString(),"String"));
     polozky.push_back(inicializujPolozku("telz",atributy.value("telz").toString(),"String"));
+    polozky.push_back(inicializujPolozku("cis",atributy.value("cis").toString(),"Integer")); //added in 1.37
     QString queryString=this->slozInsert(nazevElementu,polozky);
     QSqlQuery query;
     query.exec(queryString);
@@ -914,6 +949,7 @@ int XmlImportJr::vlozZ(QXmlStreamAttributes atributy)
     polozky.push_back(inicializujPolozku("lng",atributy.value("lng").toString(),"String"));
     polozky.push_back(inicializujPolozku("sta",atributy.value("sta").toString(),"String"));
     polozky.push_back(inicializujPolozku("m",atributy.value("m").toString(),"Integer"));
+    polozky.push_back(inicializujPolozku("kmen",atributy.value("kmen").toString(),"Integer")); //added in 1.37
     polozky.push_back(inicializujPolozku("ve",atributy.value("ve").toString(),"Boolean"));
     polozky.push_back(inicializujPolozku("bbn",atributy.value("bbn").toString(),"Boolean"));
     polozky.push_back(inicializujPolozku("kidos",atributy.value("kidos").toString(),"Integer"));
@@ -921,11 +957,12 @@ int XmlImportJr::vlozZ(QXmlStreamAttributes atributy)
     polozky.push_back(inicializujPolozku("xA",atributy.value("xA").toString(),"Boolean"));
     polozky.push_back(inicializujPolozku("xB",atributy.value("xB").toString(),"Boolean"));
     polozky.push_back(inicializujPolozku("xC",atributy.value("xC").toString(),"Boolean"));
-    polozky.push_back(inicializujPolozku("xD",atributy.value("xD").toString(),"Boolean"));
+    polozky.push_back(inicializujPolozku("xD",atributy.value("xD").toString(),"Boolean")); //added in 1.38
     polozky.push_back(inicializujPolozku("xVla",atributy.value("xVla").toString(),"Boolean"));
     polozky.push_back(inicializujPolozku("xLod",atributy.value("xLod").toString(),"Boolean"));
     polozky.push_back(inicializujPolozku("xLet",atributy.value("xLed").toString(),"Boolean"));
     polozky.push_back(inicializujPolozku("rdisp",atributy.value("rdisp").toString(),"Integer"));
+    polozky.push_back(inicializujPolozku("neprep",atributy.value("neprep").toString(),"Boolean"));
 
     QString queryString=this->slozInsert(nazevElementu,polozky);
     QSqlQuery query;
@@ -957,10 +994,18 @@ int XmlImportJr::vlozS(QXmlStreamAttributes atributy)
     polozky.push_back(inicializujPolozku("ch",atributy.value("ch").toString(),"Integer"));
     polozky.push_back(inicializujPolozku("np",atributy.value("np").toString(),"Boolean"));
     polozky.push_back(inicializujPolozku("ids",atributy.value("ids").toString(),"Boolean"));
+    polozky.push_back(inicializujPolozku("jk",atributy.value("jk").toString(),"Boolean"));
     polozky.push_back(inicializujPolozku("vy",atributy.value("vy").toString(),"Boolean"));
+    polozky.push_back(inicializujPolozku("sp1",atributy.value("sp1").toString(),"Boolean"));
+    polozky.push_back(inicializujPolozku("spN",atributy.value("spN").toString(),"Boolean"));
+    polozky.push_back(inicializujPolozku("doh",atributy.value("doh").toString(),"Boolean"));
+    polozky.push_back(inicializujPolozku("pos",atributy.value("pos").toString(),"Boolean"));
     polozky.push_back(inicializujPolozku("man",atributy.value("man").toString(),"Boolean"));
+    polozky.push_back(inicializujPolozku("skol",atributy.value("skol").toString(),"Boolean"));
+    polozky.push_back(inicializujPolozku("lc",atributy.value("lc").toString(),"Integer"));
     polozky.push_back(inicializujPolozku("c",atributy.value("c").toString(),"Integer"));
     polozky.push_back(inicializujPolozku("neve",atributy.value("neve").toString(),"Boolean"));
+    polozky.push_back(inicializujPolozku("obl",atributy.value("obl").toString(),"Integer"));
     polozky.push_back(inicializujPolozku("ns",atributy.value("ns").toString(),"Integer"));
     QString queryString=this->slozInsert(nazevElementu,polozky);
     QSqlQuery query;
