@@ -1075,6 +1075,8 @@ int XmlImportJr::vlozX(QXmlStreamAttributes atributy, int &counter, int cisloSpo
 
     polozky.push_back(inicializujPolozku("po",atributy.value("po").toString(),"String"));
     polozky.push_back(inicializujPolozku("zn",atributy.value("zn").toString(),"Boolean"));
+    polozky.push_back(inicializujPolozku("neozn",atributy.value("neozn").toString(),"Boolean"));
+    polozky.push_back(inicializujPolozku("zast",atributy.value("zast").toString(),"Boolean"));
     polozky.push_back(inicializujPolozku("vyst",atributy.value("vyst").toString(),"Boolean"));
     polozky.push_back(inicializujPolozku("nast",atributy.value("nast").toString(),"Boolean"));
     polozky.push_back(inicializujPolozku("na",atributy.value("na").toString(),"Boolean"));
