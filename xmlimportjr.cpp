@@ -1099,7 +1099,7 @@ int XmlImportJr::vlozX(QXmlStreamAttributes atributy, int &counter, int cisloSpo
     polozky.push_back(inicializujPolozku("xTro",atributy.value("xTro").toString(),"Boolean"));
     polozky.push_back(inicializujPolozku("xVla",atributy.value("xVla").toString(),"Boolean"));
     polozky.push_back(inicializujPolozku("xLod",atributy.value("xLod").toString(),"Boolean"));
-    polozky.push_back(inicializujPolozku("xLet",atributy.value("xLed").toString(),"Boolean"));
+    polozky.push_back(inicializujPolozku("xLet",atributy.value("xLet").toString(),"Boolean"));
     polozky.push_back(inicializujPolozku("xLan",atributy.value("xLan").toString(),"Boolean"));
     polozky.push_back(inicializujPolozku("xorder",QString::number(counter),"Integer"));
     polozky.push_back(inicializujPolozku("zsol",atributy.value("zsol").toString(),"Boolean"));
