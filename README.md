@@ -2,6 +2,35 @@
 Qt library to import Ropid XML to SQLite database (QXmlStreamReader version)
 
 ## Changelog
+- 20251011_2242
+  - modifications to comply with XML timetable version 1.41
+    - data.sqlite
+      - new table bod_polygon
+      - table po
+        - new value thls (starting from version 1.41) 
+        - new value tpan (starting from version 1.41) 
+        - new value kan (starting from version 1.41) 
+        - new value akce (starting from version 1.41) 
+        - new value nahr (starting from version 1.41) 
+      - table t
+        - new value vtmnoc (starting from version 1.41) 
+        - new value vtnnoc (starting from version 1.41) 
+        - new value btmnoc (starting from version 1.41) 
+        - new value btnnoc (starting from version 1.41) 
+        - new value ctmnoc (starting from version 1.41) 
+        - new value ctnnoc (starting from version 1.41) 
+        - new value lcdmnoc (starting from version 1.41) 
+        - new value lcdnnoc (starting from version 1.41) 
+        - new value ztm (starting from version ???) 
+        - new value ztn  (starting from version ???) 
+        - new value ztmnoc  (starting from version 1.41) 
+        - new value ztnnoc (starting from version 1.41) 
+    - XmlImportJr::natahni
+      - added import of the previously mentioned values
+    - XmlImportJr::vlozBod renamed to XmlImportJr::vlozBodTraj
+    - new function XmlImportJr::vlozBodPol
+    - new function XmlImportJr::vlozWgs
+
 - 20250407_1754
     - XmlImportJr::vlozX 
         - import xLed fix

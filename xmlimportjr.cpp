@@ -82,8 +82,11 @@ bool XmlImportJr::natahni(QFile &file)
         QXmlStreamAttributes atributyObehu;
         QXmlStreamAttributes atributyTr;
         QXmlStreamAttributes atributyTraj;
+        QXmlStreamAttributes atributyZ;
+        QXmlStreamAttributes atributyPol;
         int xCounter=0;
         int bodCounter=0;
+        int bodCounterPoly=0;
 
         QVector<QString> obsah;
 
@@ -144,11 +147,18 @@ bool XmlImportJr::natahni(QFile &file)
                 }
                 else if(reader.name()==QString("z"))
                 {
+                    atributyZ=atributy;
                     vlozZ(atributy);
-                }
+
+                }              
                 else if(reader.name()==QString("p"))
                 {
                     vlozP(atributy);
+                }
+                else if(reader.name()==QString("pol"))
+                {
+                    atributyPol=atributy;
+                    bodCounterPoly=0;
                 }
                 else if(reader.name()==QString("l"))
                 {
@@ -169,13 +179,11 @@ bool XmlImportJr::natahni(QFile &file)
                 else if(reader.name()==QString("tr"))
                 {
                     atributyTr=atributy;
-                    //neni implementovano
                 }
                 else if(reader.name()==QString("traj"))
                 {
                     atributyTraj=atributy;
-                    bodCounter=0;
-                    //neni implementovano
+                    bodCounter=0;             
                 }
                 else if(reader.name()==QString("obl"))
                 {
@@ -183,8 +191,27 @@ bool XmlImportJr::natahni(QFile &file)
                 }
                 else if(reader.name()==QString("bod"))
                 {
-                    vlozBod(atributy,atributyTr,atributyTraj,bodCounter);
-                    //neni implementovano
+                    if(atributyTr.isEmpty()||atributyTraj.isEmpty())
+                    {
+                        if(atributyPol.isEmpty()||atributyZ.isEmpty())
+                        {
+                            qDebug()<<"empty pol or zast";
+                        }
+                        else
+                        {
+                            vlozBodPol(atributy,atributyZ,atributyPol,bodCounterPoly);
+                        }
+
+                    }
+                    else
+                    {
+                        vlozBodTraj(atributy,atributyTr,atributyTraj,bodCounter);
+                    }
+
+                }
+                else if(reader.name()==QString("wgs"))
+                {
+                    vlozWgs(atributy,atributyTr,atributyTraj,bodCounter);
                 }
                 else if(reader.name()==QString("tv"))
                 {
@@ -260,9 +287,25 @@ bool XmlImportJr::natahni(QFile &file)
                     aktualniCisloSpoje=0;
                     xCounter=0;
                 }
-                if(reader.name()==QString("o"))
+                else if(reader.name()==QString("o"))
                 {
                     vlozSpPo(atributyObehu,navazneSpojeObehu);
+                }
+                else if(reader.name()==QString("z"))
+                {
+                    atributyZ.clear();
+                }
+                else if(reader.name()==QString("pol"))
+                {
+                    atributyPol.clear();
+                }
+                else if(reader.name()==QString("tr"))
+                {
+                    atributyTr.clear();
+                }
+                else if(reader.name()==QString("traj"))
+                {
+                    atributyTraj.clear();
                 }
             }
 
@@ -363,6 +406,7 @@ int XmlImportJr::truncateTimetables()
     truncateTable("`obl`");
     truncateTable("`hlavicka`");
     truncateTable("`bod`");
+    truncateTable("`bod_polygon`");
 
     emit odesliChybovouHlasku("timetables data deleted");
     sqLiteZaklad.zavriDB();
@@ -695,6 +739,13 @@ int XmlImportJr::vlozPo(QXmlStreamAttributes atributy)
     polozky.push_back(inicializujPolozku("zsm",atributy.value("zsm").toString(),"Integer"));
     polozky.push_back(inicializujPolozku("dd",atributy.value("dd").toString(),"Integer"));
     polozky.push_back(inicializujPolozku("mind",atributy.value("mind").toString(),"Integer"));
+    polozky.push_back(inicializujPolozku("thls",atributy.value("thls").toString(),"Boolean"));   //added in 1.41
+    polozky.push_back(inicializujPolozku("tpan",atributy.value("tpan").toString(),"String"));   //added in 1.41
+    polozky.push_back(inicializujPolozku("kan",atributy.value("kan").toString(),"String"));   //added in 1.41
+    polozky.push_back(inicializujPolozku("akce",atributy.value("akce").toString(),"String"));   //added in 1.41
+    polozky.push_back(inicializujPolozku("nahr",atributy.value("nahr").toString(),"String"));    //added in 1.41
+
+
 
     QString queryString=this->slozInsert(nazevElementu,polozky);
     QSqlQuery query;
@@ -1034,14 +1085,24 @@ int XmlImportJr::vlozT(QXmlStreamAttributes atributy)
     polozky.push_back(inicializujPolozku("ji",atributy.value("ji").toString(),"String"));
     polozky.push_back(inicializujPolozku("vtm",atributy.value("vtm").toString(),"String"));
     polozky.push_back(inicializujPolozku("vtn",atributy.value("vtn").toString(),"String"));
+    polozky.push_back(inicializujPolozku("vtmnoc",atributy.value("vtmnoc").toString(),"String")); //added in 1.41
+    polozky.push_back(inicializujPolozku("vtnnoc",atributy.value("vtnnoc").toString(),"String")); //added in 1.41
     polozky.push_back(inicializujPolozku("btm",atributy.value("btm").toString(),"String"));
     polozky.push_back(inicializujPolozku("btn",atributy.value("btn").toString(),"String"));
+    polozky.push_back(inicializujPolozku("btmnoc",atributy.value("btmnoc").toString(),"String")); //added in 1.41
+    polozky.push_back(inicializujPolozku("btnnoc",atributy.value("btnnoc").toString(),"String")); //added in 1.41
     polozky.push_back(inicializujPolozku("ctm",atributy.value("ctm").toString(),"String"));
     polozky.push_back(inicializujPolozku("ctn",atributy.value("ctn").toString(),"String"));
-    polozky.push_back(inicializujPolozku("ztm",atributy.value("ztm").toString(),"String"));
-    polozky.push_back(inicializujPolozku("ztn",atributy.value("ztn").toString(),"String"));
+    polozky.push_back(inicializujPolozku("ctmnoc",atributy.value("ctmnoc").toString(),"String")); //added in 1.41
+    polozky.push_back(inicializujPolozku("ctnnoc",atributy.value("ctnnoc").toString(),"String")); //added in 1.41
+    polozky.push_back(inicializujPolozku("ztm",atributy.value("ztm").toString(),"String")); //added in ???
+    polozky.push_back(inicializujPolozku("ztn",atributy.value("ztn").toString(),"String")); //added in ???
+    polozky.push_back(inicializujPolozku("ztmnoc",atributy.value("ztmnoc").toString(),"String")); //added in 1.41
+    polozky.push_back(inicializujPolozku("ztnnoc",atributy.value("ztnnoc").toString(),"String")); //added in 1.41
     polozky.push_back(inicializujPolozku("lcdm",atributy.value("lcdm").toString(),"String"));
-    polozky.push_back(inicializujPolozku("lcdn",atributy.value("lcdn").toString(),"String"));    
+    polozky.push_back(inicializujPolozku("lcdn",atributy.value("lcdn").toString(),"String"));
+    polozky.push_back(inicializujPolozku("lcdmnoc",atributy.value("lcdmnoc").toString(),"String")); //added in 1.41
+    polozky.push_back(inicializujPolozku("lcdnnoc",atributy.value("lcdnnoc").toString(),"String")); //added in 1.41
     polozky.push_back(inicializujPolozku("hl",atributy.value("hl").toString(),"String"));
     polozky.push_back(inicializujPolozku("n",atributy.value("n").toString(),"String"));
     polozky.push_back(inicializujPolozku("nf",atributy.value("nf").toString(),"String"));
@@ -1118,7 +1179,7 @@ int XmlImportJr::vlozX(QXmlStreamAttributes atributy, int &counter, int cisloSpo
 }
 
 
-int XmlImportJr::vlozBod(QXmlStreamAttributes atributy, QXmlStreamAttributes atributyTr, QXmlStreamAttributes atributyTraj, int &counter)
+int XmlImportJr::vlozBodTraj(QXmlStreamAttributes atributy, QXmlStreamAttributes atributyTr, QXmlStreamAttributes atributyTraj, int &counter)
 {
     //qDebug() <<  Q_FUNC_INFO;
     QString nazevElementu="bod";
@@ -1148,13 +1209,68 @@ int XmlImportJr::vlozBod(QXmlStreamAttributes atributy, QXmlStreamAttributes atr
     return 1;
 }
 
+int XmlImportJr::vlozBodPol(QXmlStreamAttributes atributy, QXmlStreamAttributes atributyZast, QXmlStreamAttributes atributyPol, int &counter)
+{
+    //qDebug() <<  Q_FUNC_INFO;
+    //added in 1.41
+    QString nazevElementu="bod_polygon";
+
+    QVector<Navrat> polozky;
+    polozky.push_back(inicializujPolozku("u",atributyZast.value("u").toString(),"Integer"));
+    polozky.push_back(inicializujPolozku("z",atributyZast.value("z").toString(),"Integer"));
+    polozky.push_back(inicializujPolozku("kj",atributyZast.value("kj").toString(),"String"));
 
 
 
+    polozky.push_back(inicializujPolozku("c",atributyPol.value("c").toString(),"Integer"));
 
 
+    polozky.push_back(inicializujPolozku("lat",atributy.value("lat").toString(),"String"));
+    polozky.push_back(inicializujPolozku("lon",atributy.value("lon").toString(),"String"));
+
+    polozky.push_back(inicializujPolozku("poradi",QString::number(counter),"Integer"));
 
 
+    QString queryString=this->slozInsert(nazevElementu,polozky);
+    QSqlQuery query;
+    query.exec(queryString);
+    //qDebug().noquote()<<queryString;
+    counter++;
+
+    return 1;
+}
 
 
+int XmlImportJr::vlozWgs(QXmlStreamAttributes atributy, QXmlStreamAttributes atributyTr, QXmlStreamAttributes atributyTraj, int &counter)
+{
+    //qDebug() <<  Q_FUNC_INFO;
+    QString nazevElementu="bod";
 
+    QVector<Navrat> polozky;
+    polozky.push_back(inicializujPolozku("zvd",atributyTr.value("zvd").toString(),"Integer"));
+    polozky.push_back(inicializujPolozku("u1",atributyTr.value("u1").toString(),"Integer"));
+    if(atributyTr.value("u1").isEmpty())
+    {
+        qDebug()<<"Empty node";
+    }
+    polozky.push_back(inicializujPolozku("z1",atributyTr.value("z1").toString(),"Integer"));
+    polozky.push_back(inicializujPolozku("u2",atributyTr.value("u2").toString(),"Integer"));
+    polozky.push_back(inicializujPolozku("z2",atributyTr.value("z2").toString(),"Integer"));
+    polozky.push_back(inicializujPolozku("var",atributyTr.value("var").toString(),"Integer"));
+    polozky.push_back(inicializujPolozku("kj",atributyTr.value("kj").toString(),"String"));
+    polozky.push_back(inicializujPolozku("c",atributyTraj.value("c").toString(),"Integer"));
+
+
+    polozky.push_back(inicializujPolozku("lon",atributy.value("lon").toString(),"String"));
+    polozky.push_back(inicializujPolozku("lat",atributy.value("lat").toString(),"String"));
+    polozky.push_back(inicializujPolozku("poradi",QString::number(counter),"Integer"));
+
+
+    QString queryString=this->slozInsert(nazevElementu,polozky);
+    QSqlQuery query;
+    query.exec(queryString);
+    //qDebug().noquote()<<queryString;
+    counter++;
+
+    return 1;
+}

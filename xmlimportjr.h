@@ -34,9 +34,10 @@ signals:
          // void resultReady(const QString &s);
 private:
 
-    bool natahni(QFile &file);   
+    bool natahni(QFile &file);
 
-    int vlozBod(QXmlStreamAttributes atributy, QXmlStreamAttributes atributyTr, QXmlStreamAttributes atributyTraj, int &counter);
+    int vlozBodPol(QXmlStreamAttributes atributy, QXmlStreamAttributes atributyZast, QXmlStreamAttributes atributyPol, int &counter);
+    int vlozBodTraj(QXmlStreamAttributes atributy, QXmlStreamAttributes atributyTr, QXmlStreamAttributes atributyTraj, int &counter);
     int vlozD(QXmlStreamAttributes atributy);
     int vlozDd(QXmlStreamAttributes atributy);
     int vlozG(QXmlStreamAttributes atributy);
@@ -57,12 +58,11 @@ private:
     int vlozTv(QXmlStreamAttributes atributy);
     int vlozTy(QXmlStreamAttributes atributy);
     int vlozX(QXmlStreamAttributes atributy, int &counter, int cisloSpoje);
-
+    int vlozWgs(QXmlStreamAttributes atributy, QXmlStreamAttributes atributyTr, QXmlStreamAttributes atributyTraj, int &counter);
     int vlozZ(QXmlStreamAttributes atributy);
     int seznamPoznamek(QXmlStreamAttributes atributy, int cisloSpoje, int poradi);
 
     QVector<int> seznamDlouhychSpoju(QXmlStreamAttributes atributy);
-
 };
 
 #endif // XMLIMPORTJR_H
