@@ -84,9 +84,11 @@ bool XmlImportJr::natahni(QFile &file)
         QXmlStreamAttributes atributyTraj;
         QXmlStreamAttributes atributyZ;
         QXmlStreamAttributes atributyPol;
+        QXmlStreamAttributes atributyPolout;
         int xCounter=0;
         int bodCounter=0;
         int bodCounterPoly=0;
+        int bodCounterPolyout=0;
 
         QVector<QString> obsah;
 
@@ -160,6 +162,11 @@ bool XmlImportJr::natahni(QFile &file)
                     atributyPol=atributy;
                     bodCounterPoly=0;
                 }
+                else if(reader.name()==QString("polout"))
+                {
+                    atributyPolout=atributy;
+                    bodCounterPolyout=0;
+                }
                 else if(reader.name()==QString("l"))
                 {
                     vlozL(atributy);
@@ -193,13 +200,21 @@ bool XmlImportJr::natahni(QFile &file)
                 {
                     if(atributyTr.isEmpty()||atributyTraj.isEmpty())
                     {
-                        if(atributyPol.isEmpty()||atributyZ.isEmpty())
+                        if(atributyZ.isEmpty())
                         {
-                            qDebug()<<"empty pol or zast";
+                            qDebug()<<"empty zast";
+                        }
+                        else if(!atributyPol.isEmpty())
+                        {
+                            vlozBodPol(atributy,atributyZ,atributyPol,bodCounterPoly,"bod_polygon");
+                        }
+                        else if(!atributyPolout.isEmpty())
+                        {
+                            vlozBodPol(atributy,atributyZ,atributyPolout,bodCounterPolyout,"bod_polygon_out");
                         }
                         else
                         {
-                            vlozBodPol(atributy,atributyZ,atributyPol,bodCounterPoly);
+                            qDebug()<<"unknown bod parent";
                         }
 
                     }
@@ -298,6 +313,10 @@ bool XmlImportJr::natahni(QFile &file)
                 else if(reader.name()==QString("pol"))
                 {
                     atributyPol.clear();
+                }
+                else if(reader.name()==QString("polout"))
+                {
+                    atributyPolout.clear();
                 }
                 else if(reader.name()==QString("tr"))
                 {
@@ -407,6 +426,7 @@ int XmlImportJr::truncateTimetables()
     truncateTable("`hlavicka`");
     truncateTable("`bod`");
     truncateTable("`bod_polygon`");
+    truncateTable("`bod_polygon_out`");
 
     emit odesliChybovouHlasku("timetables data deleted");
     sqLiteZaklad.zavriDB();
@@ -1209,11 +1229,11 @@ int XmlImportJr::vlozBodTraj(QXmlStreamAttributes atributy, QXmlStreamAttributes
     return 1;
 }
 
-int XmlImportJr::vlozBodPol(QXmlStreamAttributes atributy, QXmlStreamAttributes atributyZast, QXmlStreamAttributes atributyPol, int &counter)
+int XmlImportJr::vlozBodPol(QXmlStreamAttributes atributy, QXmlStreamAttributes atributyZast, QXmlStreamAttributes atributyPol, int &counter, QString nazevElementu)
 {
     //qDebug() <<  Q_FUNC_INFO;
     //added in 1.41
-    QString nazevElementu="bod_polygon";
+   // QString nazevElementu="bod_polygon";
 
     QVector<Navrat> polozky;
     polozky.push_back(inicializujPolozku("u",atributyZast.value("u").toString(),"Integer"));
@@ -1239,6 +1259,7 @@ int XmlImportJr::vlozBodPol(QXmlStreamAttributes atributy, QXmlStreamAttributes 
 
     return 1;
 }
+
 
 
 int XmlImportJr::vlozWgs(QXmlStreamAttributes atributy, QXmlStreamAttributes atributyTr, QXmlStreamAttributes atributyTraj, int &counter)

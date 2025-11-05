@@ -2,6 +2,11 @@
 Qt library to import Ropid XML to SQLite database (QXmlStreamReader version)
 
 ## Changelog
+- 20251105_1649
+  - XmlImportJr::natahni
+    - added import of polout (starting from version 1.41) 
+    
+
 - 20251011_2242
   - modifications to comply with XML timetable version 1.41
     - data.sqlite

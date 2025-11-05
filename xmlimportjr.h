@@ -35,8 +35,8 @@ signals:
 private:
 
     bool natahni(QFile &file);
-
-    int vlozBodPol(QXmlStreamAttributes atributy, QXmlStreamAttributes atributyZast, QXmlStreamAttributes atributyPol, int &counter);
+    
+    int vlozBodPol(QXmlStreamAttributes atributy, QXmlStreamAttributes atributyZast, QXmlStreamAttributes atributyPol, int &counter, QString nazevElementu);
     int vlozBodTraj(QXmlStreamAttributes atributy, QXmlStreamAttributes atributyTr, QXmlStreamAttributes atributyTraj, int &counter);
     int vlozD(QXmlStreamAttributes atributy);
     int vlozDd(QXmlStreamAttributes atributy);
