@@ -45,7 +45,7 @@ void XmlImportJr::otevriSoubor(QString cesta)
 
     bool vysledek=natahni(file);
 
-    sqLiteZaklad.zavriDB();
+    sqLiteZaklad.dbClose();
     QTime konec=QTime::currentTime();
     if(vysledek)
     {
@@ -74,7 +74,7 @@ bool XmlImportJr::natahni(QFile &file)
     this->databazeStart();
     QString staryTag="";
 
-    if(sqLiteZaklad.mojeDatabaze.transaction())
+    if(sqLiteZaklad.dbFile.transaction())
     {
         reader.readElementText(QXmlStreamReader::IncludeChildElements);
 
@@ -332,10 +332,10 @@ bool XmlImportJr::natahni(QFile &file)
             reader.readNext();
         }
 
-        if(!sqLiteZaklad.mojeDatabaze.commit())
+        if(!sqLiteZaklad.dbFile.commit())
         {
             qDebug() << "Failed to commit";
-            sqLiteZaklad.mojeDatabaze.rollback();
+            sqLiteZaklad.dbFile.rollback();
             emit odesliChybovouHlasku("Failed to commit");
             return false;
         }
@@ -343,7 +343,7 @@ bool XmlImportJr::natahni(QFile &file)
     else
     {
         qDebug() << "Failed to start transaction mode";
-        qDebug()<<sqLiteZaklad.mojeDatabaze.lastError();
+        qDebug()<<sqLiteZaklad.dbFile.lastError();
         emit odesliChybovouHlasku("Failed to start transaction mode");
         return false;
 
@@ -380,7 +380,7 @@ int XmlImportJr::truncateAll()
 int XmlImportJr::truncateApc()
 {
     qDebug() <<  Q_FUNC_INFO;
-    sqLiteZaklad.pripoj();
+    sqLiteZaklad.initialize();
 
     //  truncateTable("``");
 
@@ -388,7 +388,7 @@ int XmlImportJr::truncateApc()
     truncateTable("`apc_opv`");
 
     emit odesliChybovouHlasku("apc data deleted");
-    sqLiteZaklad.zavriDB();
+    sqLiteZaklad.dbClose();
     return 1;
 
 
@@ -398,7 +398,7 @@ int XmlImportJr::truncateApc()
 int XmlImportJr::truncateTimetables()
 {
     qDebug() <<  Q_FUNC_INFO;
-    sqLiteZaklad.pripoj();
+    sqLiteZaklad.initialize();
 
     //  truncateTable("``");
 
@@ -429,7 +429,7 @@ int XmlImportJr::truncateTimetables()
     truncateTable("`bod_polygon_out`");
 
     emit odesliChybovouHlasku("timetables data deleted");
-    sqLiteZaklad.zavriDB();
+    sqLiteZaklad.dbClose();
     return 1;
 }
 
@@ -438,7 +438,7 @@ int XmlImportJr::truncateTimetables()
 int XmlImportJr::truncateTasks()
 {
     qDebug() <<  Q_FUNC_INFO;
-    sqLiteZaklad.pripoj();
+    sqLiteZaklad.initialize();
 
     //  truncateTable("``");
 
@@ -446,7 +446,7 @@ int XmlImportJr::truncateTasks()
     truncateTable("`ukoly_zaznam_dopravce`");
 
     emit odesliChybovouHlasku("tasks data deleted");
-    sqLiteZaklad.zavriDB();
+    sqLiteZaklad.dbClose();
     return 1;
 
 

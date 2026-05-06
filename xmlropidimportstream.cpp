@@ -11,7 +11,7 @@ XmlRopidImportStream::XmlRopidImportStream()
 
 int XmlRopidImportStream::databazeStart()
 {
-    return   sqLiteZaklad.pripoj();
+    return   sqLiteZaklad.initialize();
 }
 
 
@@ -45,7 +45,7 @@ XmlRopidImportStream::Navrat XmlRopidImportStream::inicializujPolozku(QString na
 int XmlRopidImportStream::vacuum()
 {
     qDebug() <<  Q_FUNC_INFO;
-    sqLiteZaklad.pripoj();
+    sqLiteZaklad.initialize();
 
     QString queryString = ("VACUUM;");
 
@@ -54,7 +54,7 @@ int XmlRopidImportStream::vacuum()
     query.exec(queryString);
 
     emit odesliChybovouHlasku("databaze zmensena");
-    sqLiteZaklad.zavriDB();
+    sqLiteZaklad.dbClose();
     return 1;
 
 }
@@ -225,7 +225,7 @@ void XmlRopidImportStream::vlozPoleAtributu(QString nazevTabulky, QMap<QString,Q
     QSqlQuery query;
     // qDebug().noquote()<<queryString ;//<<" pocet polozek"<<atributy.count();
     query.exec(queryString);
-    sqLiteZaklad.existujeQueryChyba(query);
+    sqLiteZaklad.didQueryFail(query);
 
 
 }

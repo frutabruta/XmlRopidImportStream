@@ -10,7 +10,7 @@
 #include <QObject>
 #include <QWidget>
 #include <QtXml>
-#include "sqlitezaklad.h"
+#include "sqlitebase.h"
 
 class XmlRopidImportStream: public QThread
 {
@@ -28,7 +28,7 @@ public:
     XmlRopidImportStream();
 
     //instance knihoven
-    SqLiteZaklad sqLiteZaklad;
+    SqLiteBase sqLiteZaklad;
 
     //promenne
     QString vstupniXmlSouborCesta;
