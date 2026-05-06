@@ -102,7 +102,7 @@ bool SqLiteZaklad::zalozSqlTabulku(QString nazevTabulky, QVector<QString> sloupe
 
     queryText+="CREATE TABLE  "+nazevTabulky+" ("; //IF NOT EXISTS
 
-    QString vnitrek = vektorStringuOddelovac(sloupecky,",");
+    QString vnitrek = sloupecky.join(",");
 
     queryText+=" "+vnitrek+" ";
 
@@ -225,6 +225,24 @@ bool SqLiteZaklad::spustPrikaz(QString prikaz)
     return 1;
 }
 
+bool SqLiteZaklad::spustPrikaz(QSqlQuery &query)
+{
+    qDebug()<< Q_FUNC_INFO;
+
+    query.exec();
+
+    qDebug()<<query.lastQuery();
+
+
+    if(existujeQueryChyba(query))
+    {
+        return 0;
+    }
+
+
+    return 1;
+}
+
 /*!
 
 */
@@ -243,35 +261,15 @@ bool SqLiteZaklad::jeDatumVRozsahu(QDate datum, QDate zacatek, QDate konec)
     return false;
 }
 
-QString SqLiteZaklad::vektorStringuOddelovac(QVector<QString> vstup, QString oddelovac)
-{
-    QString vystup="";
-  //  qDebug()<<"vektorStringu: "<<QString::number(vstup.count());
-    if (vstup.isEmpty())
-    {
-        return "";
-    }
-    if (vstup.count()==1)
-    {
-        return vstup.first();
-    }
-
-    for(int i=0;i<vstup.count()-1;i++)
-    {
-        vystup+=vstup.at(i)+oddelovac;
-    }
-    vystup+=vstup.last();
-    return vystup;
-}
 
 bool SqLiteZaklad::vlozRadekDat(QString nazevTabulky, QVector<QString> hlavicka, QVector<QString> data)
 {
     QString queryText="";
 
     queryText+="INSERT INTO "+nazevTabulky+"( ";
-    queryText+=vektorStringuOddelovac(hlavicka,",");
+    queryText+=hlavicka.join(",");
     queryText+=") VALUES ( ";
-    queryText+=vektorStringuOddelovac(data,",");
+    queryText+=data.join(",");
     queryText+=" );";
 
    // qDebug().noquote()<<queryText;

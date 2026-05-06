@@ -32,6 +32,7 @@ public:
     bool zrusSqlTabulku(QString nazevTabulky, QVector<QString> sloupecky);
     bool ukonciTransakci();
     bool zahajTransakci();
+    bool spustPrikaz(QSqlQuery &query);
 signals:
     void odesliChybovouHlasku(QString chybovaHlaska);
 
