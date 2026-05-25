@@ -22,6 +22,8 @@ public:
     bool executeQuery(QString queryString);
     bool executeQuery(QSqlQuery &query);
 
+    QSqlQuery prepareAndExec(const QString &queryString, const QVariantMap &bindings={});
+
     bool transactionStart();
     bool transactionStop();
 
@@ -37,7 +39,13 @@ public:
     QString fillWithZeroes(int number, int expectedLength);
     bool isDateInRange(QDate selectedDate, QDate startDate, QDate endDate);
 
+    int vacuum();
+    int truncateTable(QString tableName);
 
+protected:
+    QString mConnectionName = "";
+
+    QString threadConnectionName() const;
 signals:
     void signalErrorMessage(QString chybovaHlaska);
 

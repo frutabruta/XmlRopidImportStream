@@ -5,6 +5,7 @@ SqLiteBase::SqLiteBase()
     dbFileName="data.sqlite";
     dbFolderPath=QCoreApplication::applicationDirPath();
     dbFilePath=dbFolderPath+"/"+dbFileName;
+    mConnectionName = "SqLiteBase_" + dbFilePath;
 }
 
 
@@ -18,15 +19,12 @@ int SqLiteBase::initialize()
     //this->mojeDatabaze.setPort(3306);
     //this->mojeDatabaze.setHostName("127.0.0.1");
 
-
-
     qDebug()<<"db file path:"<<dbFilePath;
 
     bool ok = dbOpen();
-    if (ok==true)
+    if (ok)
     {
         qDebug()<<"connection ok";
-        //emit odesliChybovouHlasku("připojení se povedlo");
         return 1;
     }
     else
@@ -43,27 +41,40 @@ int SqLiteBase::initialize()
 */
 int SqLiteBase::dbOpen()
 {
-    qDebug()<< Q_FUNC_INFO;
-    if(this->dbFile.isOpen())
+    qDebug() << Q_FUNC_INFO;
+
+    // Create a unique connection name per thread
+    QString connectionName = QString("%1_%2")
+                                 .arg(mConnectionName)
+                                 .arg(reinterpret_cast<quint64>(QThread::currentThread()), 0, 16);
+
+    // If this thread already has an open connection, reuse it
+    if (QSqlDatabase::contains(connectionName))
     {
+        this->dbFile = QSqlDatabase::database(connectionName);
+        if (this->dbFile.isOpen())
+        {
+            qDebug() << "Reusing existing connection:" << connectionName;
+            return 1;
+        }
+    }
+    else
+    {
+        this->dbFile = QSqlDatabase::addDatabase("QSQLITE", connectionName);
+        this->dbFile.setDatabaseName(dbFilePath);
+    }
+
+    if (this->dbFile.open())
+    {
+        qDebug() << "Opened connection:" << connectionName;
+        qDebug() << "is driver available " << QString::number(dbFile.isDriverAvailable("QSQLITE"));
+        qDebug() << "is db valid "         << QString::number(dbFile.isValid());
         return 1;
     }
     else
     {
-        this->dbFile = QSqlDatabase::addDatabase("QSQLITE");
-        this->dbFile.setDatabaseName(dbFilePath);
-        if(this->dbFile.open())
-        {
-            qDebug()<<"is driver available "<<QString::number(dbFile.isDriverAvailable("QSQLITE"));
-            qDebug()<<"is db valid "<<QString::number(dbFile.isValid());
-            return 1;
-        }
-        else
-        {
-            emit signalErrorMessage("DB open failed"+dbFile.lastError().text());
-            qDebug()<<"DB open failed "<<dbFile.lastError();
-
-        }
+        emit signalErrorMessage("DB open failed: " + dbFile.lastError().text());
+        qDebug() << "DB open failed " << dbFile.lastError();
     }
 
     return 0;
@@ -126,24 +137,14 @@ bool SqLiteBase::tableDelete(QString tableName, QVector<QString> columnNames)
 */
 int SqLiteBase::dbClose()
 {
-    qDebug()<< Q_FUNC_INFO;
-    this->dbFile.close();
-    if(1)
+    QString connectionName = threadConnectionName();
+    if (QSqlDatabase::contains(connectionName))
     {
-        QString dbCloseError="DB close OK";
-        emit signalErrorMessage(dbCloseError);
-        qDebug()<<dbCloseError;
-
-        return 1;
+        QSqlDatabase::database(connectionName).close();
+        QSqlDatabase::removeDatabase(connectionName);
+        qDebug() << "Closed connection:" << connectionName;
     }
-    else
-    {
-        QString dbOpenError="DB close FAILED";
-        emit signalErrorMessage(dbOpenError);
-        qDebug()<<dbOpenError;
-
-    }
-    return 0;
+    return 1;
 }
 
 /*!
@@ -243,6 +244,58 @@ bool SqLiteBase::insertDataRow(QString nazevTabulky, QVector<QString> hlavicka, 
     return executeQuery(queryText);
 }
 
+QSqlQuery SqLiteBase::prepareAndExec(const QString &queryString,
+                                     const QVariantMap &bindings)
+{
+    QString connectionName = threadConnectionName();
+
+    if (!QSqlDatabase::contains(connectionName) ||
+        !QSqlDatabase::database(connectionName).isOpen())
+    {
+        if (!dbOpen())
+        {
+            qWarning() << Q_FUNC_INFO << "Failed to open database for thread:" << connectionName;
+            return QSqlQuery();
+        }
+    }
+
+    QSqlDatabase db = QSqlDatabase::database(connectionName);
+    QSqlQuery query(db);
+
+    if (!query.prepare(queryString))
+    {
+        qWarning() << Q_FUNC_INFO << "Prepare failed:" << query.lastError();
+        return query;
+    }
+
+    // Log the actual bound values Qt sees after binding
+
+    if(!bindings.isEmpty())
+    {    // Log all bindings
+        qDebug() << Q_FUNC_INFO << "Bindings:";
+        for (auto it = bindings.begin(); it != bindings.end(); ++it)
+        {
+            query.bindValue(it.key(), it.value());
+            qDebug() << " " << it.key() << "=" << it.value();
+        }
+        qDebug() << Q_FUNC_INFO << "Bound values:" << query.boundValues();
+    }
+
+    if (!query.exec())
+    {
+        qWarning() << Q_FUNC_INFO << "Query failed:" << query.lastError();
+        return query;
+    }
+
+    return query;
+}
+
+QString SqLiteBase::threadConnectionName() const
+{
+    return QString("%1_%2")
+    .arg(mConnectionName)
+        .arg(reinterpret_cast<quint64>(QThread::currentThread()), 0, 16);
+}
 
 bool SqLiteBase::transactionStop()
 {
@@ -271,5 +324,24 @@ bool SqLiteBase::transactionStart()
         dbFile.rollback();
         return 0;
     }
+    return 1;
+}
+
+
+int SqLiteBase::vacuum()
+{
+    qDebug() <<  Q_FUNC_INFO;
+    QString queryString = ("VACUUM;");
+    prepareAndExec(queryString);
+    return 1;
+}
+
+
+int SqLiteBase::truncateTable(QString tableName)
+{
+    qDebug() <<  Q_FUNC_INFO;
+    QString queryString = ("DELETE FROM ");
+    queryString+=tableName;
+    prepareAndExec(queryString);
     return 1;
 }

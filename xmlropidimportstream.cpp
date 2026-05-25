@@ -42,36 +42,7 @@ XmlRopidImportStream::Navrat XmlRopidImportStream::inicializujPolozku(QString na
     return navrat;
 }
 
-int XmlRopidImportStream::vacuum()
-{
-    qDebug() <<  Q_FUNC_INFO;
-    sqLiteZaklad.initialize();
 
-    QString queryString = ("VACUUM;");
-
-    qDebug().noquote()<<queryString;
-    QSqlQuery query;
-    query.exec(queryString);
-
-    emit odesliChybovouHlasku("databaze zmensena");
-    sqLiteZaklad.dbClose();
-    return 1;
-
-}
-
-
-
-
-int XmlRopidImportStream::truncateTable(QString tabulka)
-{
-    qDebug() <<  Q_FUNC_INFO;
-    QString queryString = ("DELETE FROM ");
-    queryString+=tabulka;
-    qDebug().noquote()<<queryString;
-    QSqlQuery query;
-    query.exec(queryString);
-    return 1;
-}
 
 
 
@@ -226,8 +197,6 @@ void XmlRopidImportStream::vlozPoleAtributu(QString nazevTabulky, QMap<QString,Q
     // qDebug().noquote()<<queryString ;//<<" pocet polozek"<<atributy.count();
     query.exec(queryString);
     sqLiteZaklad.didQueryFail(query);
-
-
 }
 
 void XmlRopidImportStream::QMapAppend(QMap<QString,QString> &puvodni, QMap<QString,QString> pridany)
@@ -236,9 +205,12 @@ void XmlRopidImportStream::QMapAppend(QMap<QString,QString> &puvodni, QMap<QStri
     {
         puvodni.insert(pridany.keys().at(i),pridany.values().at(i));
     }
-
-
 }
 
+
+void XmlRopidImportStream::truncateTable(QString tableName)
+{
+    sqLiteZaklad.truncateTable(tableName);
+}
 
 

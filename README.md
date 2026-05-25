@@ -2,6 +2,22 @@
 Qt library to import Ropid XML to SQLite database (QXmlStreamReader version)
 
 ## Changelog
+- 20260525_1835
+  - SqLiteBase::dbOpen
+    - added debug outust
+    - prevent db access errors
+  - SqLiteBase::dbClose
+    - added debug outust
+    - prevent db access errors
+  - SqLiteBase::prepareAndExec
+    - new universal function to support variable binding
+  - SqLiteBase::vacuum
+    - moved from XmlRopidImportStream
+  -  SqLiteBase::truncateTable
+    - moved from XmlRopidImportStream
+  - XmlImportJr
+    - complete rework using sqLiteZaklad.prepareAndExec
+  
 - 20260506_1908
   -  SqLiteZaklad renamed to SqLiteBase
   -  SqLiteBase

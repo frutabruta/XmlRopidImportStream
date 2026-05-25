@@ -380,15 +380,10 @@ int XmlImportJr::truncateAll()
 int XmlImportJr::truncateApc()
 {
     qDebug() <<  Q_FUNC_INFO;
-    sqLiteZaklad.initialize();
-
-    //  truncateTable("``");
-
     truncateTable("`apc_dpp`");
     truncateTable("`apc_opv`");
-
     emit odesliChybovouHlasku("apc data deleted");
-    sqLiteZaklad.dbClose();
+
     return 1;
 
 
@@ -398,7 +393,6 @@ int XmlImportJr::truncateApc()
 int XmlImportJr::truncateTimetables()
 {
     qDebug() <<  Q_FUNC_INFO;
-    sqLiteZaklad.initialize();
 
     //  truncateTable("``");
 
@@ -427,9 +421,7 @@ int XmlImportJr::truncateTimetables()
     truncateTable("`bod`");
     truncateTable("`bod_polygon`");
     truncateTable("`bod_polygon_out`");
-
     emit odesliChybovouHlasku("timetables data deleted");
-    sqLiteZaklad.dbClose();
     return 1;
 }
 
@@ -438,15 +430,10 @@ int XmlImportJr::truncateTimetables()
 int XmlImportJr::truncateTasks()
 {
     qDebug() <<  Q_FUNC_INFO;
-    sqLiteZaklad.initialize();
-
     //  truncateTable("``");
-
     truncateTable("`ukoly_zaznam`");
     truncateTable("`ukoly_zaznam_dopravce`");
-
     emit odesliChybovouHlasku("tasks data deleted");
-    sqLiteZaklad.dbClose();
     return 1;
 
 
@@ -509,10 +496,7 @@ int XmlImportJr::vlozD(QXmlStreamAttributes atributy)
     polozky.push_back(inicializujPolozku("em",atributy.value("em").toString(),"String"));
     QString queryString=this->slozInsert("d",polozky);
 
-    //  QSqlQuery query(queryString,sqLiteZaklad.mojeDatabaze);
-
-    QSqlQuery query;
-    query.exec(queryString);
+    sqLiteZaklad.prepareAndExec(queryString);
 
 
     return 1;
@@ -529,8 +513,7 @@ int XmlImportJr::vlozDd(QXmlStreamAttributes atributy)
     polozky.push_back(inicializujPolozku("z",atributy.value("z").toString(),"String"));
     polozky.push_back(inicializujPolozku("n",atributy.value("n").toString(),"String"));
     QString queryString=this->slozInsert("dd",polozky);
-    QSqlQuery query;
-    query.exec(queryString);
+    sqLiteZaklad.prepareAndExec(queryString);
 
     return 1;
 }
@@ -548,8 +531,7 @@ int XmlImportJr::vlozG(QXmlStreamAttributes atributy)
     polozky.push_back(inicializujPolozku("zvd",atributy.value("zvd").toString(),"Integer"));
     polozky.push_back(inicializujPolozku("pd",atributy.value("pd").toString(),"String"));
     QString queryString=this->slozInsert("g",polozky);
-    QSqlQuery query;
-    query.exec(queryString);
+    sqLiteZaklad.prepareAndExec(queryString);
 
     return 1;
 }
@@ -564,8 +546,7 @@ int XmlImportJr::vlozCh(QXmlStreamAttributes atributy)
     polozky.push_back(inicializujPolozku("c",atributy.value("c").toString(),"Integer"));
     polozky.push_back(inicializujPolozku("n",atributy.value("n").toString(),"String"));
     QString queryString=this->slozInsert(nazevElementu,polozky);
-    QSqlQuery query;
-    query.exec(queryString);
+    sqLiteZaklad.prepareAndExec(queryString);
 
     return 1;
 
@@ -582,8 +563,7 @@ int XmlImportJr::vlozIds(QXmlStreamAttributes atributy)
     polozky.push_back(inicializujPolozku("n",atributy.value("n").toString(),"String"));
     polozky.push_back(inicializujPolozku("tapoj",atributy.value("tapoj").toString(),"String"));
     QString queryString=this->slozInsert(nazevElementu,polozky);
-    QSqlQuery query;
-    query.exec(queryString);
+    sqLiteZaklad.prepareAndExec(queryString);
 
     return 1;
 
@@ -598,8 +578,7 @@ int XmlImportJr::vlozK(QXmlStreamAttributes atributy)
     polozky.push_back(inicializujPolozku("c",atributy.value("c").toString(),"Integer"));
     polozky.push_back(inicializujPolozku("n",atributy.value("n").toString(),"String"));
     QString queryString=this->slozInsert(nazevElementu,polozky);
-    QSqlQuery query;
-    query.exec(queryString);
+    sqLiteZaklad.prepareAndExec(queryString);
 
     return 1;
 
@@ -617,8 +596,7 @@ int XmlImportJr::vlozM(QXmlStreamAttributes atributy)
     polozky.push_back(inicializujPolozku("z",atributy.value("z").toString(),"String"));
 
     QString queryString=this->slozInsert(nazevElementu,polozky);
-    QSqlQuery query;
-    query.exec(queryString);
+    sqLiteZaklad.prepareAndExec(queryString);
 
     return 1;
 
@@ -638,11 +616,8 @@ int XmlImportJr::vlozTv(QXmlStreamAttributes atributy)
     polozky.push_back(inicializujPolozku("np",atributy.value("np").toString(),"Boolean"));
 
     QString queryString=this->slozInsert(nazevElementu,polozky);
-    QSqlQuery query;
-    query.exec(queryString);
-
+    sqLiteZaklad.prepareAndExec(queryString);
     return 1;
-
 }
 
 int XmlImportJr::vlozO(QXmlStreamAttributes atributy)
@@ -661,8 +636,7 @@ int XmlImportJr::vlozO(QXmlStreamAttributes atributy)
     polozky.push_back(inicializujPolozku("td",atributy.value("td").toString(),"Integer"));
     polozky.push_back(inicializujPolozku("vyb",atributy.value("vyb").toString(),"String"));
     QString queryString=this->slozInsert(nazevElementu,polozky);
-    QSqlQuery query;
-    query.exec(queryString);
+    sqLiteZaklad.prepareAndExec(queryString);
 
     return 1;
 
@@ -680,13 +654,10 @@ int XmlImportJr::vlozObl(QXmlStreamAttributes atributy)
     polozky.push_back(inicializujPolozku("n",atributy.value("n").toString(),"String"));
     polozky.push_back(inicializujPolozku("z",atributy.value("z").toString(),"String"));
 
-
     QString queryString=this->slozInsert(nazevElementu,polozky);
-    QSqlQuery query;
-    query.exec(queryString);
+    sqLiteZaklad.prepareAndExec(queryString);
 
     return 1;
-
 }
 
 
@@ -711,10 +682,12 @@ int XmlImportJr::vlozPlatnost(QXmlStreamAttributes atributy, QDate &plOd, QDate 
     polozky.push_back(inicializujPolozku("ver",atributy.value("ver").toString(),"String"));
     polozky.push_back(inicializujPolozku("filepath",fileName,"String"));
     QString queryString=this->slozInsert("hlavicka",polozky);
-    QSqlQuery query;
+
+    sqLiteZaklad.prepareAndExec(queryString);
+   /* QSqlQuery query;
     query.exec(queryString);
     qDebug().noquote()<<queryString;
-
+    */
 
     QString vystup="platnost dat od "+plOd.toString(Qt::ISODate)+" do "+plDo.toString(Qt::ISODate)+" \n pocet dni:"+QString::number(plOd.daysTo(plDo)+1);
     //   QSqlQuery query(queryString,sqLiteZaklad.mojeDatabaze);
@@ -765,27 +738,16 @@ int XmlImportJr::vlozPo(QXmlStreamAttributes atributy)
     polozky.push_back(inicializujPolozku("akce",atributy.value("akce").toString(),"String"));   //added in 1.41
     polozky.push_back(inicializujPolozku("nahr",atributy.value("nahr").toString(),"String"));    //added in 1.41
 
-
-
     QString queryString=this->slozInsert(nazevElementu,polozky);
-    QSqlQuery query;
-    query.exec(queryString);
-
-    QString error=query.lastError().databaseText();
-    if (error!="")
-    {
-
-        qDebug()<<query.lastError().databaseText()<<" "<<query.lastError().driverText() ;
-    }
+    sqLiteZaklad.prepareAndExec(queryString);
 
     return 1;
-
 }
 
 
 int XmlImportJr::vlozR(QXmlStreamAttributes atributy)
 {
-    //   qDebug() <<  Q_FUNC_INFO;
+    //  qDebug() <<  Q_FUNC_INFO;
     QString nazevElementu="r";
 
     QVector<Navrat> polozky;
@@ -793,11 +755,9 @@ int XmlImportJr::vlozR(QXmlStreamAttributes atributy)
     polozky.push_back(inicializujPolozku("pop",atributy.value("pop").toString(),"String"));
 
     QString queryString=this->slozInsert(nazevElementu,polozky);
-    QSqlQuery query;
-    query.exec(queryString);
+    sqLiteZaklad.prepareAndExec(queryString);
 
     return 1;
-
 }
 
 
@@ -812,11 +772,9 @@ int XmlImportJr::vlozTy(QXmlStreamAttributes atributy)
     polozky.push_back(inicializujPolozku("li",atributy.value("li").toString(),"String"));
 
     QString queryString=this->slozInsert(nazevElementu,polozky);
-    QSqlQuery query;
-    query.exec(queryString);
+    sqLiteZaklad.prepareAndExec(queryString);
 
     return 1;
-
 }
 
 
@@ -846,8 +804,7 @@ int XmlImportJr::vlozSpPo(QXmlStreamAttributes atributyO,QVector<int> navazujici
         polozky.push_back(inicializujPolozku("pokrac",QString::number(navazujiciSpoje.contains(seznam.at(i).toInt())),"Boolean"));
         polozky.push_back(inicializujPolozku("ord",QString::number(i),"Integer"));
         QString queryString=this->slozInsert("sp_po",polozky);
-        QSqlQuery query;
-        query.exec(queryString);
+        sqLiteZaklad.prepareAndExec(queryString);
     }
 
     return 1;
@@ -907,9 +864,7 @@ int XmlImportJr::seznamPoznamek(QXmlStreamAttributes atributy, int cisloSpoje, i
             polozky.push_back(inicializujPolozku("s",QString::number(cisloSpoje),"Integer"));
             polozky.push_back(inicializujPolozku("po",seznam.at(j),"Integer"));
             QString queryString=this->slozInsert(nazevElementu,polozky);
-            QSqlQuery query;
-            // qDebug().noquote()<<queryString;
-            query.exec(queryString);
+            sqLiteZaklad.prepareAndExec(queryString);
         }
     }
     else
@@ -947,8 +902,7 @@ int XmlImportJr::vlozL(QXmlStreamAttributes atributy)
     polozky.push_back(inicializujPolozku("cids",atributy.value("cids").toString(),"String"));
 
     QString queryString=this->slozInsert(nazevElementu,polozky);
-    QSqlQuery query;
-    query.exec(queryString);
+    sqLiteZaklad.prepareAndExec(queryString);
 
     return 1;
 
@@ -974,8 +928,7 @@ int XmlImportJr::vlozP(QXmlStreamAttributes atributy)
     polozky.push_back(inicializujPolozku("telz",atributy.value("telz").toString(),"String"));
     polozky.push_back(inicializujPolozku("cis",atributy.value("cis").toString(),"Integer")); //added in 1.37
     QString queryString=this->slozInsert(nazevElementu,polozky);
-    QSqlQuery query;
-    query.exec(queryString);
+    sqLiteZaklad.prepareAndExec(queryString);
 
     return 1;
 }
@@ -1036,8 +989,7 @@ int XmlImportJr::vlozZ(QXmlStreamAttributes atributy)
     polozky.push_back(inicializujPolozku("neprep",atributy.value("neprep").toString(),"Boolean"));
 
     QString queryString=this->slozInsert(nazevElementu,polozky);
-    QSqlQuery query;
-    query.exec(queryString);
+    sqLiteZaklad.prepareAndExec(queryString);
     //  qDebug().noquote()<<queryString;
     return 1;
 
@@ -1079,11 +1031,7 @@ int XmlImportJr::vlozS(QXmlStreamAttributes atributy)
     polozky.push_back(inicializujPolozku("obl",atributy.value("obl").toString(),"Integer"));
     polozky.push_back(inicializujPolozku("ns",atributy.value("ns").toString(),"Integer"));
     QString queryString=this->slozInsert(nazevElementu,polozky);
-    QSqlQuery query;
-    query.exec(queryString);
-
-
-
+    sqLiteZaklad.prepareAndExec(queryString);
 
     return atributy.value("s").toInt();
 }
@@ -1128,8 +1076,7 @@ int XmlImportJr::vlozT(QXmlStreamAttributes atributy)
     polozky.push_back(inicializujPolozku("nf",atributy.value("nf").toString(),"String"));
 
     QString queryString=this->slozInsert(nazevElementu,polozky);
-    QSqlQuery query;
-    query.exec(queryString);
+    sqLiteZaklad.prepareAndExec(queryString);
 
     return 1;
 
@@ -1190,8 +1137,7 @@ int XmlImportJr::vlozX(QXmlStreamAttributes atributy, int &counter, int cisloSpo
     polozky.push_back(inicializujPolozku("nev",atributy.value("nev").toString(),"Boolean"));
 
     QString queryString=this->slozInsert(nazevElementu,polozky);
-    QSqlQuery query;
-    query.exec(queryString);
+    sqLiteZaklad.prepareAndExec(queryString);
     seznamPoznamek(atributy,cisloSpoje,counter );
     counter++;
 
@@ -1221,8 +1167,7 @@ int XmlImportJr::vlozBodTraj(QXmlStreamAttributes atributy, QXmlStreamAttributes
 
 
     QString queryString=this->slozInsert(nazevElementu,polozky);
-    QSqlQuery query;
-    query.exec(queryString);
+    sqLiteZaklad.prepareAndExec(queryString);
     //qDebug().noquote()<<queryString;
     counter++;
 
@@ -1239,21 +1184,14 @@ int XmlImportJr::vlozBodPol(QXmlStreamAttributes atributy, QXmlStreamAttributes 
     polozky.push_back(inicializujPolozku("u",atributyZast.value("u").toString(),"Integer"));
     polozky.push_back(inicializujPolozku("z",atributyZast.value("z").toString(),"Integer"));
     polozky.push_back(inicializujPolozku("kj",atributyZast.value("kj").toString(),"String"));
-
-
-
     polozky.push_back(inicializujPolozku("c",atributyPol.value("c").toString(),"Integer"));
-
-
     polozky.push_back(inicializujPolozku("lat",atributy.value("lat").toString(),"String"));
     polozky.push_back(inicializujPolozku("lon",atributy.value("lon").toString(),"String"));
-
     polozky.push_back(inicializujPolozku("poradi",QString::number(counter),"Integer"));
 
 
     QString queryString=this->slozInsert(nazevElementu,polozky);
-    QSqlQuery query;
-    query.exec(queryString);
+    sqLiteZaklad.prepareAndExec(queryString);
     //qDebug().noquote()<<queryString;
     counter++;
 
@@ -1288,8 +1226,7 @@ int XmlImportJr::vlozWgs(QXmlStreamAttributes atributy, QXmlStreamAttributes atr
 
 
     QString queryString=this->slozInsert(nazevElementu,polozky);
-    QSqlQuery query;
-    query.exec(queryString);
+    sqLiteZaklad.prepareAndExec(queryString);
     //qDebug().noquote()<<queryString;
     counter++;
 

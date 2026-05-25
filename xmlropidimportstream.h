@@ -42,7 +42,6 @@ public:
 
     void otevriSoubor(QString cesta);
 
-    int truncateTable(QString tabulka);
     int truncateAll();
 
     int indexX=0;
@@ -50,7 +49,7 @@ public:
     int spocitejRadkySouboru(QString fileName);
     void vlozPoleAtributu(QString nazevTabulky, QMap<QString, QString> atributy);
     void QMapAppend(QMap<QString, QString> &puvodni, QMap<QString, QString> pridany);
-    int vacuum();
+    void truncateTable(QString tableName);
 public slots:
  //   void slotOtevriSoubor(QString cesta);
 signals:
